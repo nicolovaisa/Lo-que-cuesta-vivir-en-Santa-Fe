@@ -1,24 +1,190 @@
-async function compartir() {
-    const textoACompartir = datosCompartir + "\nCalculado en: " + window.location.href;
-
-    // 1. Intento compartir con el menú nativo (Celulares/Navegadores modernos)
-    if (navigator.share) {
-        try {
-            await navigator.share({
-                title: 'Mi Presupuesto',
-                text: textoACompartir
-            });
-        } catch (err) {
-            console.log("Compartir cancelado");
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Gastos Mensuales</title>
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --bg-body: #f0f2f5;
         }
-    } 
-    // 2. Si no soporta compartir, copio al portapapeles automáticamente
-    else {
-        try {
-            await navigator.clipboard.writeText(textoACompartir);
-            alert("¡Resultado copiado al portapapeles! Ya puedes pegarlo en WhatsApp o redes sociales.");
-        } catch (err) {
-            alert("No se pudo compartir ni copiar. Por favor, selecciona el texto del resultado manualmente.");
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-body); padding: 20px; color: #212529; line-height: 1.6; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: var(--primary-color); margin-bottom: 25px; font-weight: 800; text-transform: uppercase; }
+        .field { margin-bottom: 18px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; color: #495057; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
+        input:focus, select:focus { border-color: var(--primary-color); outline: none; }
+        
+        .button-group { display: flex; gap: 10px; margin-top: 15px; }
+        button { flex: 1; padding: 15px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-calc { background-color: var(--primary-color); color: white; }
+        .btn-reset { background-color: #6c757d; color: white; }
+        #share-btn { width: 100%; background-color: #25d366; color: white; margin-top: 15px; display: none; }
+        
+        .res-box { margin-top: 25px; padding: 20px; border-radius: 15px; display: none; text-align: center; border: 1px solid transparent; }
+        .pos { background-color: #e6f4ea; border-color: #34a853; color: #137333; }
+        .neg { background-color: #fce8e6; border-color: #ea4335; color: #c5221f; }
+        
+        .progress-container { width: 100%; background-color: rgba(0,0,0,0.1); border-radius: 10px; margin: 15px 0; height: 20px; overflow: hidden; }
+        .progress-bar { height: 100%; transition: width 0.8s ease; width: 0%; }
+        
+        .info-nota { font-size: 0.8em; color: #6c757d; margin-top: 4px; font-style: italic; }
+        optgroup { color: var(--primary-color); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Mi Presupuesto</h2>
+
+    <div class="field">
+        <label>Tus Ingresos Mensuales ($)</label>
+        <input type="number" id="ingreso" placeholder="Monto total en pesos">
+    </div>
+
+    <div class="field">
+        <label>Alquiler</label>
+        <select id="alquiler">
+            <option value="0">No alquilo / Propio</option>
+            <option value="430000">1 ambiente</option>
+            <option value="600000">2 ambientes</option>
+            <option value="700000">3 ambientes</option>
+            <option value="830000">4 ambientes</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Tarifas (Luz, Gas y Agua)</label>
+        <select id="tarifas">
+            <!-- OPCIÓN POR DEFECTO SIN VALOR -->
+            <option value="" disabled selected>Selecciona tu situación tarifaria</option>
+            <option value="141722.99">Con subsidios consumo medio</option>
+            <option value="181337.99">Sin subsidios consumo medio</option>
+            <option value="186886.99">Con subsidios consumo medio/alto</option>
+            <option value="214289.99">Sin subsidios consumo medio/alto</option>
+        </select>
+        <div class="info-nota">* Electricidad, gas natural y agua según consumo promedio.</div>
+    </div>
+
+    <div class="field">
+        <label>Cobertura Médica (Prepaga)</label>
+        <select id="prepaga">
+            <option value="0">No tengo / Obra Social</option>
+            <optgroup label="Planes Individuales">
+                <option value="106000">Individual: Opción económica</option>
+                <option value="121916">Individual: Opción media</option>
+                <option value="144000">Individual: Opción alta</option>
+            </optgroup>
+            <optgroup label="Planes Familiares">
+                <option value="385454">Familiar: Opción económica</option>
+                <option value="500463">Familiar: Opción media</option>
+                <option value="764223">Familiar: Opción alta</option>
+            </optgroup>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Litros de Nafta (al mes)</label>
+        <input type="number" id="nafta" placeholder="Ej: 40">
+        <div class="info-nota">* Litro a $1.850</div>
+    </div>
+
+    <div class="field">
+        <label>Boletos de Colectivo (al mes)</label>
+        <input type="number" id="colectivo" placeholder="Ej: 20">
+        <div class="info-nota">* Boleto a $1.720</div>
+    </div>
+
+    <div class="button-group">
+        <button class="btn-calc" onclick="calcular()">Calcular</button>
+        <button class="btn-reset" onclick="reiniciar()">Reiniciar</button>
+    </div>
+
+    <div id="resultado" class="res-box">
+        <div id="monto-final" style="font-size: 1.8em; font-weight: bold;"></div>
+        <div id="porcentaje-texto" style="margin: 10px 0; font-weight: 600;"></div>
+        
+        <div class="progress-container">
+            <div id="barra" class="progress-bar"></div>
+        </div>
+
+        <div id="desglose" style="font-size: 0.9em; margin-top: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px;"></div>
+        <button id="share-btn" onclick="compartir()">Compartir Resultado 🔗</button>
+    </div>
+</div>
+
+<script>
+    const formato = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+    let textoGlobal = "";
+
+    function calcular() {
+        const ingresoInput = document.getElementById('ingreso').value;
+        const tarifasInput = document.getElementById('tarifas').value;
+
+        // Validaciones
+        if (!ingresoInput || parseFloat(ingresoInput) <= 0) { 
+            alert("Por favor, ingresa tu ingreso mensual."); 
+            return; 
+        }
+        if (tarifasInput === "") { 
+            alert("Por favor, selecciona una categoría en Tarifas."); 
+            return; 
+        }
+
+        const ingreso = parseFloat(ingresoInput);
+        const gastos = parseFloat(document.getElementById('alquiler').value) +
+                       parseFloat(tarifasInput) +
+                       parseFloat(document.getElementById('prepaga').value) +
+                       ((parseFloat(document.getElementById('nafta').value) || 0) * 1850) +
+                       ((parseFloat(document.getElementById('colectivo').value) || 0) * 1720);
+
+        const saldo = ingreso - gastos;
+        const porc = (saldo / ingreso) * 100;
+        
+        document.getElementById('resultado').style.display = 'block';
+        document.getElementById('share-btn').style.display = 'block';
+        
+        if (saldo >= 0) {
+            document.getElementById('resultado').className = 'res-box pos';
+            document.getElementById('barra').style.backgroundColor = '#198754';
+            document.getElementById('monto-final').innerText = "Saldo: " + formato.format(saldo);
+            document.getElementById('porcentaje-texto').innerText = "Te queda el " + porc.toFixed(1) + "%";
+            textoGlobal = `¡Calculé mi presupuesto! Me queda el ${porc.toFixed(1)}% del sueldo libre (${formato.format(saldo)}).`;
+        } else {
+            document.getElementById('resultado').className = 'res-box neg';
+            document.getElementById('barra').style.backgroundColor = '#dc3545';
+            document.getElementById('monto-final').innerText = "Déficit: " + formato.format(Math.abs(saldo));
+            document.getElementById('porcentaje-texto').innerText = "Gastas un " + Math.abs(porc).toFixed(1) + "% más de lo que ganas.";
+            textoGlobal = `Mi presupuesto está en rojo por ${formato.format(Math.abs(saldo))}. Gastos exceden sueldo en un ${Math.abs(porc).toFixed(1)}%.`;
+        }
+
+        document.getElementById('barra').style.width = Math.max(0, Math.min(100, porc)) + "%";
+        document.getElementById('desglose').innerText = "Gastos Totales: " + formato.format(gastos);
+        
+        // Scroll automático al resultado
+        document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function compartir() {
+        const t = textoGlobal + "\nCalculado en: " + window.location.href;
+        if (navigator.share) {
+            try { await navigator.share({ title: 'Presupuesto', text: t }); } catch (e) {}
+        } else {
+            try { 
+                await navigator.clipboard.writeText(t); 
+                alert("¡Copiado! Ya puedes pegarlo en WhatsApp o redes."); 
+            } catch (e) { 
+                alert("Copia el texto manualmente."); 
+            }
         }
     }
-}
+
+    function reiniciar() { location.reload(); }
+</script>
+
+</body>
+</html>
