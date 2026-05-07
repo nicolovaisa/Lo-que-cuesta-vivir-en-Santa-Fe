@@ -36,6 +36,7 @@
             height: auto;
             margin-bottom: 15px;
             border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .main-header h1 {
             color: white;
@@ -43,6 +44,7 @@
             text-transform: uppercase;
             font-size: 1.1rem;
             margin: 0;
+            line-height: 1.4;
         }
 
         .container { 
@@ -86,7 +88,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        .placa-logo-small { max-width: 60px; height: auto; }
+        .placa-logo-small { max-width: 60px; height: auto; border-radius: 5px; }
         .placa-creditos { text-transform: uppercase; font-weight: 800; font-size: 0.7rem; color: white; text-align: right; }
 
         #btn-descargar { display: none; width: 100%; background-color: var(--comunidad-fucsia); color: white; margin-top: 20px; padding: 16px; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
@@ -102,7 +104,7 @@
 <body>
 
 <header class="main-header">
-    <img src="Informes/Logo%20Comunidad_Con%20Fondo%20Morado.jpg.jpeg" alt="Comunidad">
+    <img src="https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Logo%20Comunidad_Con%20Fondo%20Morado.jpg.jpeg" alt="Comunidad">
     <h1>¿Cuánto cuesta vivir en Santa Fe?</h1>
 </header>
 
@@ -169,7 +171,7 @@
         <div id="placa-monto" class="placa-monto"></div>
         <div id="placa-porc" style="font-weight: 600; margin-bottom: 20px;"></div>
         <div class="placa-footer">
-            <img src="Informes/Logo%20Comunidad_Con%20Fondo%20Morado.jpg.jpeg" alt="Logo" class="placa-logo-small">
+            <img src="https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Logo%20Comunidad_Con%20Fondo%20Morado.jpg.jpeg" alt="Logo" class="placa-logo-small">
             <div class="placa-creditos">No era la casta, eras vos</div>
         </div>
     </div>
@@ -211,7 +213,7 @@
         const ingresoLimpio = document.getElementById('ingreso').value.replace(/\./g, "");
         const ingreso = parseFloat(ingresoLimpio) || 0;
         const tarifasInput = document.getElementById('tarifas').value;
-        if (ingreso <= 0 || tarifasInput === "") { alert("Ingresa tus ingresos."); return; }
+        if (ingreso <= 0 || tarifasInput === "") { alert("Ingresa tus ingresos mensualmente."); return; }
         const gastos = parseFloat(document.getElementById('alquiler').value) + parseFloat(tarifasInput) + parseFloat(document.getElementById('prepaga').value) + ((parseFloat(document.getElementById('nafta').value) || 0) * 1850) + ((parseFloat(document.getElementById('colectivo').value) || 0) * 1720);
         const saldo = ingreso - gastos;
         const porc = (saldo / ingreso) * 100;
