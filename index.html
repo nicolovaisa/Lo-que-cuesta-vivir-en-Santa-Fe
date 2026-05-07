@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¿Cuánto cuesta vivir en Santa Fe?</title>
+    <title>Calculadora Comunidad: Costo de Vida Santa Fe</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --comunidad-violeta: #3D1488;
-            --comunidad-fucsia: #EF3C6B;
+            --comunidad-violeta: #3D1488; /* Fondo image_0.png */
+            --comunidad-fucsia: #EF3C6B; /* Texto image_0.png */
             --bg-page: var(--comunidad-violeta);
             --bg-container: #FFFFFF;
+            --text-main: #212529;
+            --text-light: #6c757d;
         }
 
         body { 
@@ -25,6 +27,27 @@
             min-height: 100vh;
         }
 
+        /* HEADER CON LOGO DE AGRUPACIÓN */
+        .main-header {
+            text-align: center;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 480px;
+        }
+        .main-header img {
+            max-width: 250px; /* Tamaño del logo arriba */
+            height: auto;
+            margin-bottom: 15px;
+        }
+        .main-header h1 {
+            color: white;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
         .container { 
             max-width: 480px; 
             width: 100%;
@@ -36,58 +59,87 @@
             margin-bottom: 50px;
         }
 
-        h2 { text-align: center; color: var(--comunidad-violeta); margin-bottom: 30px; font-weight: 800; text-transform: uppercase; font-size: 1.3rem; line-height: 1.2; }
+        h2 { 
+            text-align: center; 
+            color: var(--comunidad-violeta); 
+            margin-bottom: 30px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            font-size: 1.1rem; 
+            line-height: 1.3;
+        }
 
+        /* Estilos de inputs y botones (manteniendo la estética) */
         .field { margin-bottom: 20px; }
         label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--comunidad-violeta); }
         input, select { width: 100%; padding: 14px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        input:focus, select:focus { border-color: var(--comunidad-fucsia); outline: none; }
         
         .button-group { display: flex; gap: 12px; margin-top: 20px; }
-        button { flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
+        button { flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
         .btn-calc { background-color: var(--comunidad-fucsia); color: white; }
         .btn-calc:hover { background-color: var(--comunidad-violeta); transform: translateY(-2px); }
         .btn-reset { background-color: #495057; color: white; }
 
+        /* PLACA DE RESULTADO CON LOGO INTEGRADO */
         #placa-resultado {
             display: none;
             margin-top: 30px;
-            padding: 50px 30px;
+            padding: 40px 20px;
             border-radius: 20px;
             text-align: center;
             background-color: var(--comunidad-violeta); 
             color: white;
             border: 5px solid var(--comunidad-fucsia); 
+            position: relative; /* Para posicionar el logo dentro */
         }
-        .placa-monto { font-size: 3rem; font-weight: 800; color: var(--comunidad-fucsia); margin: 15px 0; }
-        .placa-footer { font-size: 1.1rem; margin-top: 35px; border-top: 2px solid rgba(255,255,255,0.1); padding-top: 20px; font-weight: 800; text-transform: uppercase; }
+        .placa-titulo { font-weight: 800; text-transform: uppercase; font-size: 1rem; letter-spacing: 2px; margin-bottom: 5px; }
+        .placa-monto { font-size: 3rem; font-weight: 800; color: var(--comunidad-fucsia); margin: 10px 0; }
+        .placa-porc { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; }
+        
+        /* FOOTER DE LA PLACA CON LOGO */
+        .placa-footer { 
+            font-size: 0.9rem; 
+            margin-top: 30px; 
+            border-top: 2px solid rgba(255,255,255,0.1); 
+            padding-top: 15px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+        .placa-logo-small {
+            max-width: 90px; /* Tamaño del logo en la placa */
+            height: auto;
+        }
+        .placa-creditos {
+            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: white;
+        }
 
         #btn-descargar { display: none; width: 100%; background-color: var(--comunidad-fucsia); color: white; margin-top: 20px; padding: 16px; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
 
+        /* Sección de Informes (se mantiene igual) */
         .informes-section { max-width: 1000px; width: 100%; text-align: center; color: white; padding-bottom: 60px; }
         .informes-section h3 { font-size: 1.3rem; margin-bottom: 30px; font-weight: 600; }
         .informes-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-
-        .informe-card {
-            background: white;
-            color: var(--comunidad-violeta);
-            padding: 25px;
-            border-radius: 20px;
-            flex: 1;
-            min-width: 280px;
-            max-width: 320px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+        .informe-card { background: white; color: var(--comunidad-violeta); padding: 25px; border-radius: 20px; flex: 1; min-width: 280px; max-width: 320px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .pdf-viewer { width: 100%; height: 350px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; }
         .btn-download { background: var(--comunidad-fucsia); color: white; text-decoration: none; padding: 12px 15px; border-radius: 10px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; text-align: center; width: 90%; }
+        optgroup { color: var(--comunidad-violeta); font-weight: bold; }
     </style>
 </head>
 <body>
 
+<header class="main-header">
+    <img src="Logo Comunidad_Con Fondo_Morado.jpg.jpeg" alt="Logo Comunidad">
+    <h1>¿Cuánto cuesta vivir en Santa Fe?</h1>
+</header>
+
 <div class="container">
-    <h2>¿Cuánto cuesta vivir en Santa Fe?</h2>
+    <h2>Calculadora de Costo de Vida: Comunidad</h2>
 
     <div class="field">
         <label>Ingresos Mensuales ($)</label>
@@ -120,12 +172,16 @@
         <label>Prepaga</label>
         <select id="prepaga">
             <option value="0">No tengo / Obra Social</option>
-            <option value="106000">Indiv. Económica</option>
-            <option value="121916">Indiv. Media</option>
-            <option value="144000">Indiv. Alta</option>
-            <option value="385454">Fam. Económica</option>
-            <option value="500463">Fam. Media</option>
-            <option value="764223">Fam. Alta</option>
+            <optgroup label="Planes Individuales">
+                <option value="106000">Individual: Económica</option>
+                <option value="121916">Individual: Media</option>
+                <option value="144000">Individual: Alta</option>
+            </optgroup>
+            <optgroup label="Planes Familiares">
+                <option value="385454">Familiar: Económica</option>
+                <option value="500463">Familiar: Media</option>
+                <option value="764223">Familiar: Alta</option>
+            </optgroup>
         </select>
     </div>
 
@@ -148,7 +204,11 @@
         <div id="placa-titulo" class="placa-titulo"></div>
         <div id="placa-monto" class="placa-monto"></div>
         <div id="placa-porc" class="placa-porc"></div>
-        <div class="placa-footer">No era la casta, eras vos</div>
+        
+        <div class="placa-footer">
+            <img src="Logo Comunidad_Con Fondo_Morado.jpg.jpeg" alt="Logo Comunidad" class="placa-logo-small">
+            <div class="placa-creditos">No era la casta, eras vos</div>
+        </div>
     </div>
 
     <button id="btn-descargar" onclick="descargarPlaca()">Descargar Placa 📸</button>
@@ -157,19 +217,16 @@
 <div class="informes-section">
     <h3>¿Querés saber cómo calculamos estos datos? Leé nuestros informes.</h3>
     <div class="informes-grid">
-        <!-- Informe Tarifas -->
         <div class="informe-card">
             <strong>Informe Tarifas</strong>
             <iframe class="pdf-viewer" src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Tarifas.pdf&embedded=true"></iframe>
             <a href="https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Tarifas.pdf" target="_blank" class="btn-download">Descargar PDF</a>
         </div>
-        <!-- Informe Prepagas -->
         <div class="informe-card">
             <strong>Informe Prepagas</strong>
             <iframe class="pdf-viewer" src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Prepagas%20y%20Medicamentos.pdf&embedded=true"></iframe>
             <a href="https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Prepagas%20y%20Medicamentos.pdf" target="_blank" class="btn-download">Descargar PDF</a>
         </div>
-        <!-- Informe Alquileres (Nombre actualizado) -->
         <div class="informe-card">
             <strong>Informe Alquileres</strong>
             <iframe class="pdf-viewer" src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Alquileres%20COMUNIDAD.pdf&embedded=true"></iframe>
@@ -211,9 +268,13 @@
 
     function descargarPlaca() {
         const placa = document.getElementById('placa-resultado');
-        html2canvas(placa, { scale: 2 }).then(canvas => {
+        html2canvas(placa, { 
+            scale: 2,
+            useCORS: true, /* Necesario para cargar el logo en la imagen */
+            allowTaint: true
+        }).then(canvas => {
             const link = document.createElement('a');
-            link.download = 'mi-presupuesto.png';
+            link.download = 'presupuesto-comunidad.png';
             link.href = canvas.toDataURL("image/png");
             link.click();
         });
