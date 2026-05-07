@@ -36,7 +36,6 @@
             height: auto;
             margin-bottom: 15px;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .main-header h1 {
             color: white;
@@ -44,7 +43,6 @@
             text-transform: uppercase;
             font-size: 1.1rem;
             margin: 0;
-            line-height: 1.4;
         }
 
         .container { 
@@ -88,7 +86,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        .placa-logo-small { max-width: 60px; height: auto; border-radius: 5px; }
+        .placa-logo-small { max-width: 60px; height: auto; }
         .placa-creditos { text-transform: uppercase; font-weight: 800; font-size: 0.7rem; color: white; text-align: right; }
 
         #btn-descargar { display: none; width: 100%; background-color: var(--comunidad-fucsia); color: white; margin-top: 20px; padding: 16px; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
@@ -104,7 +102,7 @@
 <body>
 
 <header class="main-header">
-    <img src="Informes/logo.jpg" alt="Comunidad">
+    <img src="https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Logo%20Comunidad_Con%20Fondo%20Morado.jpg.jpeg" alt="Comunidad">
     <h1>¿Cuánto cuesta vivir en Santa Fe?</h1>
 </header>
 
@@ -171,7 +169,7 @@
         <div id="placa-monto" class="placa-monto"></div>
         <div id="placa-porc" style="font-weight: 600; margin-bottom: 20px;"></div>
         <div class="placa-footer">
-            <img src="Informes/logo.jpg" alt="Logo" class="placa-logo-small">
+            <img src="https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Logo%20Comunidad_Con%20Fondo%20Morado.jpg.jpeg" alt="Logo" class="placa-logo-small">
             <div class="placa-creditos">No era la casta, eras vos</div>
         </div>
     </div>
@@ -233,9 +231,14 @@
 
     function descargarPlaca() {
         const placa = document.getElementById('placa-resultado');
-        html2canvas(placa, { scale: 2, useCORS: true }).then(canvas => {
+        html2canvas(placa, { 
+            scale: 2, 
+            useCORS: true,
+            logging: true,
+            allowTaint: false
+        }).then(canvas => {
             const link = document.createElement('a');
-            link.download = 'mi-presupuesto-comunidad.png';
+            link.download = 'presupuesto-comunidad.png';
             link.href = canvas.toDataURL("image/png");
             link.click();
         });
