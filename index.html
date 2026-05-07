@@ -71,7 +71,7 @@
         .placa-creditos { text-transform: uppercase; font-weight: 800; font-size: 0.9rem; color: white; }
 
         .actions-group { display: none; flex-direction: column; gap: 12px; width: 100%; margin-top: 20px; }
-        .btn-share { background-color: #25D366; color: white; } /* Color estilo WhatsApp/Compartir */
+        .btn-share { background-color: #25D366; color: white; }
         .btn-download { background-color: var(--comunidad-fucsia); color: white; }
 
         .section-divider { width: 100%; text-align: center; color: white; margin: 40px 0 20px 0; }
@@ -103,7 +103,7 @@
 <body>
 
 <header class="main-header">
-    <img src="https://raw.githubusercontent.com/nicolovaisa/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Logo%20Comunidad_Con%20Fondo%20Morado.jpg.jpeg" alt="Comunidad">
+    <img src="Informes/logo.jpg" alt="Comunidad">
     <h1>¿Cuánto cuesta vivir en Santa Fe?</h1>
 </header>
 
@@ -227,8 +227,8 @@
         const ingreso = parseFloat(ingresoRaw) || 0;
         const tarifasVal = document.getElementById('tarifas').value;
 
-        if (ingreso <= 0) { alert("Ingresá tus ingresos mensuales."); return; }
-        if (tarifasVal === "") { alert("Seleccioná una opción de tarifas."); return; }
+        if (ingreso <= 0) { alert("Ingresá tus ingresos."); return; }
+        if (tarifasVal === "") { alert("Seleccioná tus tarifas."); return; }
 
         const gastos = parseFloat(document.getElementById('alquiler').value) + 
                        parseFloat(tarifasVal) + 
@@ -264,11 +264,11 @@
                     await navigator.share({
                         files: [file],
                         title: 'Mi Presupuesto Santa Fe',
-                        text: 'Mirá cuánto me queda de ingresos según los datos de Comunidad.'
+                        text: 'Mirá cuánto me queda de ingresos según Comunidad.'
                     });
-                } catch (err) { console.error("Error al compartir:", err); }
+                } catch (err) { console.error(err); }
             } else {
-                alert("Tu navegador no soporta compartir directamente. ¡Usá el botón de Descargar!");
+                alert("Tu navegador no soporta compartir. ¡Usa el botón de descarga!");
             }
         });
     }
@@ -277,7 +277,7 @@
         const placa = document.getElementById('placa-resultado');
         html2canvas(placa, { scale: 2, useCORS: true }).then(canvas => {
             const link = document.createElement('a');
-            link.download = 'mi-presupuesto-comunidad.png';
+            link.download = 'mi-presupuesto.png';
             link.href = canvas.toDataURL("image/png");
             link.click();
         });
