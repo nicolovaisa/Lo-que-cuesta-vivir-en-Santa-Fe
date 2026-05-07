@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- CONFIGURACIÓN PARA WHATSAPP / REDES -->
     <title>Comunidad | Santa Fe</title>
     
     <meta property="og:title" content="Comunidad">
@@ -16,7 +15,6 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/placa.png">
 
-    <!-- Icono de la pestaña -->
     <link rel="icon" type="image/jpeg" href="Informes/logo.jpg">
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
@@ -44,6 +42,25 @@
         .main-header { text-align: center; margin-bottom: 30px; width: 100%; max-width: 480px; }
         .main-header img { max-width: 150px; height: auto; margin-bottom: 15px; border-radius: 15px; }
         .main-header h1 { color: white; font-weight: 800; text-transform: uppercase; font-size: 1.1rem; margin: 0; }
+
+        /* Estilo para el botón de compartir herramienta arriba */
+        .btn-share-top {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+        .btn-share-top:hover { transform: scale(1.05); }
 
         .container { 
             max-width: 480px; 
@@ -121,6 +138,9 @@
 <header class="main-header">
     <img src="Informes/logo.jpg" alt="Comunidad">
     <h1>¿Cuánto cuesta vivir en Santa Fe?</h1>
+    <a href="https://wa.me/?text=Trabajar%20cada%20vez%20m%C3%A1s%20para%20vivir%20cada%20vez%20peor.%20Calcul%C3%A1%20cu%C3%A1nto%20te%20queda%20de%20ingresos%20ac%C3%A1%3A%20https%3A%2F%2Fcomunidadsfe.github.io%2FLo-que-cuesta-vivir-en-Santa-Fe%2F" target="_blank" class="btn-share-top">
+        Compartir herramienta 📱
+    </a>
 </header>
 
 <div class="container">
