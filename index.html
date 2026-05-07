@@ -5,18 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Comunidad | Santa Fe</title>
-    
     <meta property="og:title" content="Comunidad">
     <meta property="og:description" content="*Trabajar cada vez más para vivir cada vez peor.* Diseñamos una herramienta para calcular cuánto queda de ingresos después de pagar alquiler y servicios básicos. No era la casta, eras vos.">
     <meta property="og:image" content="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/placa.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://comunidadsfe.github.io/Lo-que-cuesta-vivir-en-Santa-Fe/">
-    
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/placa.png">
 
     <link rel="icon" type="image/jpeg" href="Informes/logo.jpg">
-
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
@@ -137,7 +134,7 @@
 <header class="main-header">
     <img src="Informes/logo.jpg" alt="Comunidad">
     <h1>¿Cuánto cuesta vivir en Santa Fe?</h1>
-    <a href="https://wa.me/?text=Trabajar%20cada%20vez%20m%C3%A1s%20para%20vivir%20cada%20vez%20peor.%20Calcul%C3%A1%20cu%C3%A1nto%20te%20queda%20de%20ingresos%20ac%C3%A1%3A%20https%3A%2F%2Fcomunidadsfe.github.io%2FLo-que-cuesta-vivir-en-Santa-Fe%2F" target="_blank" class="btn-share-top">
+    <a href="https://wa.me/?text=*Trabajar%20cada%20vez%20m%C3%A1s%20para%20vivir%20cada%20vez%20peor.*%20Calcul%C3%A1%20cu%C3%A1nto%20te%20queda%20de%20ingresos%20ac%C3%A1%3A%20https%3A%2F%2Fcomunidadsfe.github.io%2FLo-que-cuesta-vivir-en-Santa-Fe%2F" target="_blank" class="btn-share-top">
         Compartir herramienta 📱
     </a>
 </header>
@@ -296,10 +293,11 @@
             const file = new File([blob], 'mi-presupuesto.png', { type: 'image/png' });
             if (navigator.share) {
                 try {
+                    // Quitamos la descripción redundante para que WhatsApp use la de la previsualización del link
                     await navigator.share({
                         files: [file],
-                        title: 'Mi Presupuesto Santa Fe',
-                        text: 'Mirá cuánto me queda de ingresos según Comunidad.'
+                        title: 'Mi Presupuesto Comunidad',
+                        text: 'https://comunidadsfe.github.io/Lo-que-cuesta-vivir-en-Santa-Fe/'
                     });
                 } catch (err) { console.error("Error al compartir:", err); }
             } else {
