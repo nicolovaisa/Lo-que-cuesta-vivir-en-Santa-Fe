@@ -75,6 +75,8 @@
         label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--comunidad-violeta); }
         input, select { width: 100%; padding: 14px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
         
+        .nota-aclaratoria { font-size: 11px; color: #6c757d; margin-top: 5px; font-weight: 400; line-height: 1.2; }
+
         .button-group { display: flex; gap: 12px; margin-top: 20px; }
         button { flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
         .btn-calc { background-color: var(--comunidad-fucsia); color: white; }
@@ -183,13 +185,29 @@
     </div>
 
     <div class="field">
-        <label>Nafta (Litros/Mes)</label>
-        <input type="number" id="nafta" placeholder="Cantidad">
+        <label>Monotributo</label>
+        <select id="monotributo">
+            <option value="0">No pago / No aplica</option>
+            <option value="42386.74">Categoría A ($42.386,74)</option>
+            <option value="48250.78">Categoría B ($48.250,78)</option>
+            <option value="56501.85">Categoría C ($56.501,85)</option>
+            <option value="72414.10">Categoría D ($72.414,10)</option>
+        </select>
     </div>
 
     <div class="field">
-        <label>Colectivo (Boletos/Mes)</label>
-        <input type="number" id="colectivo" placeholder="Cantidad">
+        <label>Nafta (Litros/Mes)</label>
+        <input type="number" id="nafta" placeholder="Cantidad">
+        <div class="nota-aclaratoria">Cálculo realizado con valor de nafta súper de YPF en Santa Fe, mayo 2026</div>
+    </div>
+
+    <div class="field">
+        <label>Colectivo (Cantidad de Boletos/Mes)</label>
+        <input type="number" id="colectivo_cant" placeholder="Cantidad" style="margin-bottom: 10px;">
+        <select id="colectivo_tipo">
+            <option value="1720">Boleto Completo ($1.720)</option>
+            <option value="860">Medio Boleto ($860)</option>
+        </select>
     </div>
 
     <div class="button-group">
@@ -265,8 +283,9 @@
         const gastos = parseFloat(document.getElementById('alquiler').value) + 
                        parseFloat(tarifasVal) + 
                        parseFloat(document.getElementById('prepaga').value) + 
-                       ((parseFloat(document.getElementById('nafta').value) || 0) * 1850) + 
-                       ((parseFloat(document.getElementById('colectivo').value) || 0) * 1720);
+                       parseFloat(document.getElementById('monotributo').value) + 
+                       ((parseFloat(document.getElementById('nafta').value) || 0) * 2060) + 
+                       ((parseFloat(document.getElementById('colectivo_cant').value) || 0) * parseFloat(document.getElementById('colectivo_tipo').value));
         
         const saldo = ingreso - gastos;
         const porc = (saldo / ingreso) * 100;
@@ -293,8 +312,6 @@
             const file = new File([blob], 'mi-presupuesto.png', { type: 'image/png' });
             if (navigator.share) {
                 try {
-                    // Solo enviamos el archivo de la imagen. 
-                    // WhatsApp mostrará la imagen y dejará que el usuario agregue su comentario si quiere.
                     await navigator.share({
                         files: [file],
                         title: 'Mi Presupuesto Comunidad'
