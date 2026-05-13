@@ -99,8 +99,8 @@
     </div>
 
     <div class="field">
-        <label>Prepaga</label>
-        <select id="prepaga">
+        <label>Salud</label>
+        <select id="salud">
             <option value="0">Sistema de Salud Público</option>
             <option value="0">Tengo Obra Social</option>
             <option value="106000">Individual Económica</option>
@@ -185,7 +185,7 @@
         <a href="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Tarifas.pdf" target="_blank" class="btn-pdf-dl">Descargar PDF</a>
     </div>
     <div class="informe-card">
-        <strong>Prepagas</strong>
+        <strong>Salud</strong>
         <iframe class="pdf-viewer" src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Prepagas%20y%20Medicamentos.pdf&embedded=true"></iframe>
         <a href="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Prepagas%20y%20Medicamentos.pdf" target="_blank" class="btn-pdf-dl">Descargar PDF</a>
     </div>
@@ -244,7 +244,7 @@
 
         const gastos = parseFloat(document.getElementById('alquiler').value) + 
                        parseFloat(tarifasVal) + 
-                       parseFloat(document.getElementById('prepaga').value) + 
+                       parseFloat(document.getElementById('salud').value) + 
                        parseFloat(document.getElementById('monotributo').value) + 
                        gastosAuto + gastosBondi;
         
@@ -270,7 +270,7 @@
         formData.append("entry.1345467469", ingreso);
         formData.append("entry.1154021935", document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text);
         formData.append("entry.1557253484", document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text);
-        formData.append("entry.1541049932", document.getElementById('prepaga').options[document.getElementById('prepaga').selectedIndex].text);
+        formData.append("entry.1541049932", document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text);
         formData.append("entry.27844837", document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text);
         formData.append("entry.1276651353", document.getElementById('mueve_auto').value === 'si' ? "Litros: " + document.getElementById('nafta').value + " | SEOM: " + document.getElementById('seom').value : "No usa auto");
         formData.append("entry.796852082", document.getElementById('mueve_bondi').value === 'si' ? document.getElementById('colectivo_cant').value + " (" + document.getElementById('colectivo_tipo').options[document.getElementById('colectivo_tipo').selectedIndex].text + ")" : "No usa colectivo");
