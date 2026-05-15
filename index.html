@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Comunidad | Santa Fe</title>
+    <link rel="icon" type="image/jpeg" href="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/logo.jpg?v=2">
+    
     <meta property="og:title" content="Comunidad">
     <meta property="og:description" content="*Trabajar cada vez más para vivir cada vez peor.* Diseñamos una herramienta para calcular cuánto queda de ingresos después de pagar alquiler y servicios básicos. No era la casta, eras vos.">
     <meta property="og:image" content="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/placa.png">
@@ -54,11 +56,9 @@
         .btn-share { background-color: #25D366; color: white; }
         .btn-download { background-color: var(--comunidad-fucsia); color: white; }
 
-        /* Botón Instagram Minimalista */
         .btn-insta-min { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--comunidad-violeta); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin: -10px auto 30px auto; padding: 10px 20px; border: 2px solid var(--comunidad-fucsia); border-radius: 50px; background: white; transition: 0.3s; width: fit-content; }
         .btn-insta-min:hover { transform: scale(1.05); }
 
-        /* Estilos Formulario Contacto */
         .form-container { background: white; border-radius: 24px; padding: 30px; max-width: 480px; width: 100%; margin: 0 auto 40px auto; color: var(--comunidad-violeta); box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 2px solid var(--comunidad-fucsia); box-sizing: border-box; }
         .form-input { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; font-weight: 600; outline: none; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
         .form-input:focus { border-color: var(--comunidad-fucsia); }
@@ -240,7 +240,6 @@
 </div>
 
 <script>
-    // LÓGICA FORMULARIO CONTACTO
     let currentMode = 'wa';
     let submitted = false;
 
@@ -290,7 +289,6 @@
 
     setFormMode('wa');
 
-    // LÓGICA CALCULADORA GASTOS
     const formato = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
     
     function formatearMonto(input) {
@@ -361,7 +359,6 @@
             document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
         }
 
-        // ENVÍO INVISIBLE DE CÁLCULO
         const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSf5E0Sl-nkVcoQ50I621uRXVC85PnGO-vVFuee8UAE02tXCNA/formResponse";
         const formData = new FormData();
         formData.append("entry.1345467469", ingreso);
