@@ -1,11 +1,7 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Comunidad | Santa Fe</title>
@@ -308,7 +304,7 @@
 
     setFormMode('wa');
 
-    // LÓGICA DINÁMICA DE ENTRADA DE INGRESOS
+    // LÓGICA DINÁMICA DE ENTRADA DE INGRESOS Y FUENTES NO REPETITIVAS
     function toggleIngresoManual() {
         const selector = document.getElementById('tipo_ingreso');
         const contenedorManual = document.getElementById('contenedor_ingreso_manual');
@@ -336,7 +332,7 @@
         }
     }
 
-    // LÓGICA CALCULADORA
+    // LÓGICA CALCULADORA GASTOS
     const formato = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
     
     function formatearMonto(input) {
@@ -435,67 +431,48 @@
             document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
         }
 
-        // ——— ENVÍO AL NUEVO FORMULARIO ———
-        const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSexVODJ4z04uIDtozN3Yx0ApsfJE0E1Mxvte_NmLuPWi4dSug/formResponse";
-        const formData = new FormData();
+        // Generar un ID único basado en el timestamp actual para el anclaje de datos
+        const idCalculo = new Date().toISOString();
 
-        // 1. ID de cálculo: timestamp
-        formData.append("entry.724915036", new Date().toISOString());
-
-        // 2. Tipo de ingreso / Perfil (String exacto)
-        formData.append("entry.1489203948", esPreset ? tipoIngresoTexto : "Cargar mis ingresos manualmente");
-
-        // 3. Monto de ingresos (Valor numérico plano)
-        formData.append("entry.2039481029", ingreso);
-
-        // 4. Alquiler (String exacto mapeado de las opciones del select)
+        // Mapeo de strings visuales para campos de opciones
         const alquilerEl = document.getElementById('alquiler');
-        formData.append("entry.582910493", alquilerEl.options[alquilerEl.selectedIndex].text);
+        const alquilerTexto = alquilerEl.options[alquilerEl.selectedIndex].text;
 
-        // 5. Tarifas (String exacto mapeado de las opciones del select)
         const tarifasEl = document.getElementById('tarifas');
-        formData.append("entry.1920492019", tarifasEl.options[tarifasEl.selectedIndex].text);
+        const tarifasTexto = tarifasEl.options[tarifasEl.selectedIndex].text;
 
-        // 6. Salud (String exacto mapeado de las opciones del select)
         const saludEl = document.getElementById('salud');
-        formData.append("entry.394820195", saludEl.options[saludEl.selectedIndex].text);
+        const saludTexto = saludEl.options[saludEl.selectedIndex].text;
 
-        // 7. Monotributo (String exacto mapeado de las opciones del select)
         const monotributoEl = document.getElementById('monotributo');
-        formData.append("entry.1049204921", monotributoEl.options[monotributoEl.selectedIndex].text);
+        const monotributoTexto = monotributoEl.options[monotributoEl.selectedIndex].text;
 
-        // 8. Vehículo (Mapeo a la opción textual del formulario: "No", "Sí, en moto", "Sí, en auto")
-        let vehiculoTextoForm = "No";
-        if (vehiculoTipo === "moto") vehiculoTextoForm = "Sí, en moto";
-        if (vehiculoTipo === "auto") vehiculoTextoForm = "Sí, en auto";
-        formData.append("entry.1849204921", vehiculoTextoForm);
+        let vehiculoTexto = "No";
+        if (vehiculoTipo === "moto") vehiculoTexto = "Sí, en moto";
+        if (vehiculoTipo === "auto") vehiculoTexto = "Sí, en auto";
 
-        // 9. Nafta litros
-        formData.append("entry.294810295", naftaLitros);
-
-        // 10. Nafta costo total
-        formData.append("entry.849204912", naftaCostoTotal);
-
-        // 11. SEOM
-        formData.append("entry.1492049202", seomMonto);
-
-        // 12. Colectivo (Mapeo a la opción de tu Form: "Sí" o "No")
-        formData.append("entry.492049103", usaBondi ? "Sí" : "No");
-
-        // 13. Cantidad boletos
-        formData.append("entry.1039482011", colectivoCant);
-
-        // 14. Tipo de boleto / Tarifa (String exacto)
-        formData.append("entry.1940294811", usaBondi ? colectivoTipoTexto : "");
-
-        // 15. Gasto colectivo total
-        formData.append("entry.687498306", gastosBondi);
-
-        // 16. Saldo final
-        formData.append("entry.454992525", saldo);
+        // Envío invisible de datos a tu NUEVO Google Form de respuestas cortas
+        const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSd1LagvHkPQoveNaDk2oKnfpFROkNrwudw2gorUCnp8tpI/formResponse";
+        const formData = new FormData();
+        
+        formData.append("entry.1985472103", idCalculo);            // 1. ID Cálculo
+        formData.append("entry.456123984", tipoIngresoTexto);      // 2. Perfil de Ingresos
+        formData.append("entry.1122334455", ingreso);              // 3. Ingresos Mensuales ($)
+        formData.append("entry.887766554", alquilerTexto);         // 4. Alquiler
+        formData.append("entry.201948374", tarifasTexto);          // 5. Tarifas (Luz, Gas, Agua)
+        formData.append("entry.142536475", saludTexto);            // 6. Salud
+        formData.append("entry.998877665", monotributoTexto);      // 7. Monotributo
+        formData.append("entry.334455667", vehiculoTexto);         // 8. ¿Se mueve en auto o en moto?
+        formData.append("entry.556677889", naftaLitros);            // 9. Nafta (Litros/Mes)
+        formData.append("entry.121314151", naftaCostoTotal);        // 10. Nafta Gasto Total ($)
+        formData.append("entry.161718192", seomMonto);              // 11. Gasto SEOM ($)
+        formData.append("entry.212223242", usaBondi ? "Sí" : "No"); // 12. ¿Se mueve en colectivo?
+        formData.append("entry.252627282", colectivoCant);          // 13. Cantidad de Boletos/Mes
+        formData.append("entry.293031323", usaBondi ? colectivoTipoTexto : ""); // 14. Tipo de Tarifa de Colectivo
+        formData.append("entry.333435363", gastosBondi);            // 15. Gasto Total Colectivo ($)
+        formData.append("entry.373839404", saldo);                  // 16. Saldo Final ($)
 
         fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
-
         document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
     }
 
