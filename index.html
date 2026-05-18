@@ -254,7 +254,7 @@
     </div>
 </div>
 
-<iframe name="invisible_form_iframe" id="invisible_form_iframe" style="display:none;"></iframe>
+<iframe name="contenedor_envio_invisible" id="contenedor_envio_invisible" style="display:none;"></iframe>
 
 <script>
     // LÓGICA FORMULARIO CONTACTO
@@ -429,44 +429,46 @@
             document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
         }
 
-        // CREACIÓN DINÁMICA DE UN FORMULARIO EN MEMORIA ASOCIADO AL IFRAME PARA EL ENVIÓ COMPATIBLE CON CORS
-        const targetForm = document.createElement('form');
-        targetForm.method = 'POST';
-        targetForm.action = 'https://docs.google.com/forms/d/e/1FAIpQLSexVODJ4z04uIDtozN3Yx0ApsfJE0E1Mxvte_NmLuPWi4dSug/formResponse';
-        targetForm.target = 'invisible_form_iframe';
-        targetForm.style.display = 'none';
+        // CONTROL INTEGRAL MEDIANTE INTERFAZ FORM EN MEMORIA ENVIADO AL IFRAME INDEPENDIENTE
+        const formularioEnvio = document.createElement('form');
+        formularioEnvio.method = 'POST';
+        formularioEnvio.action = 'https://docs.google.com/forms/d/e/1FAIpQLSexVODJ4z04uIDtozN3Yx0ApsfJE0E1Mxvte_NmLuPWi4dSug/formResponse';
+        formularioEnvio.target = 'contenedor_envio_invisible';
+        formularioEnvio.style.display = 'none';
 
-        const addParam = (name, value) => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = name;
-            input.value = value;
-            targetForm.appendChild(input);
+        const agregarCampo = (nombre, valor) => {
+            const inputHidden = document.createElement('input');
+            inputHidden.type = 'hidden';
+            inputHidden.name = nombre;
+            inputHidden.value = valor;
+            formularioEnvio.appendChild(inputHidden);
         };
 
-        // INYECCIÓN ORDENADA DE LOS 14 MAPEOS PARA TU NUEVO EXCEL
-        addParam("entry.789366050", ingreso);
-        addParam("entry.560044812", esPreset ? selector.options[selector.selectedIndex].text : "Manual");
-        addParam("entry.320562563", document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text);
-        addParam("entry.353057028", document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text);
-        addParam("entry.1141729873", document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text);
-        addParam("entry.2003469524", document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text);
+        // INTEGRACIÓN CRUCIAL: NORMALIZACIÓN DE VARIABLES NUMÉRICAS Y TEXTOS PARA COMPATIBILIDAD CON GOOGLE FORMS
+        agregarCampo("entry.789366050", ingreso);
+        agregarCampo("entry.560044812", esPreset ? selector.options[selector.selectedIndex].text : "Manual");
+        agregarCampo("entry.320562563", document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text);
+        agregarCampo("entry.353057028", document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text);
+        agregarCampo("entry.1141729873", document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text);
+        agregarCampo("entry.2003469524", document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text);
         
-        addParam("entry.1910555676", document.getElementById('mueve_vehiculo').options[document.getElementById('mueve_vehiculo').selectedIndex].text);
-        addParam("entry.1850411247", naftaLitros);
-        addParam("entry.35313641", naftaCosto);
-        addParam("entry.1095848126", seomMonto);
+        // Mapeos de Vehículo normalizados para evitar fallas de validación de datos
+        agregarCampo("entry.1910555676", document.getElementById('mueve_vehiculo').options[document.getElementById('mueve_vehiculo').selectedIndex].text);
+        agregarCampo("entry.1850411247", naftaLitros);
+        agregarCampo("entry.35313641", naftaCosto);
+        agregarCampo("entry.1095848126", seomMonto);
         
-        addParam("entry.2038736944", document.getElementById('mueve_bondi').options[document.getElementById('mueve_bondi').selectedIndex].text);
-        addParam("entry.1936157354", colectivoCant);
-        addParam("entry.1986127655", document.getElementById('mueve_bondi').value === 'si' ? document.getElementById('colectivo_tipo').options[document.getElementById('colectivo_tipo').selectedIndex].text : "No");
-        addParam("entry.476360893", gastosBondi);
+        // Mapeos de Colectivo normalizados con ceros limpios en lugar de textos incompatibles con campos numéricos
+        agregarCampo("entry.2038736944", document.getElementById('mueve_bondi').options[document.getElementById('mueve_bondi').selectedIndex].text);
+        agregarCampo("entry.1936157354", colectivoCant);
+        agregarCampo("entry.1986127655", document.getElementById('mueve_bondi').value === 'si' ? document.getElementById('colectivo_tipo').options[document.getElementById('colectivo_tipo').selectedIndex].text : "No");
+        agregarCampo("entry.476360893", gastosBondi);
 
-        document.body.appendChild(targetForm);
-        targetForm.submit();
+        document.body.appendChild(formularioEnvio);
+        formularioEnvio.submit();
         
         setTimeout(() => {
-            document.body.removeChild(targetForm);
+            document.body.removeChild(formularioEnvio);
         }, 500);
 
         document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
