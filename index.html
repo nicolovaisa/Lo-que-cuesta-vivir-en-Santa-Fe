@@ -311,4 +311,204 @@
     // LÓGICA DINÁMICA DE ENTRADA DE INGRESOS
     function toggleIngresoManual() {
         const selector = document.getElementById('tipo_ingreso');
-        const contenedorManual = document.getElementById('contenedor_ingreso_ma
+        const contenedorManual = document.getElementById('contenedor_ingreso_manual');
+        const divFuente = document.getElementById('fuente_ingreso');
+        
+        const fuentes = {
+            "463174": "* Mayo 2026",
+            "940586": "* INDEC, Encuesta Permanente de Hogares",
+            "975000": "* Acuerdo Paritario (sin presentismo)",
+            "1037205": "* Maestro de Grado, 25 horas, sin antigüedad (sin presentismo)",
+            "1063650": "* CUEC, Categoría Maestranza A, sin antigüedad"
+        };
+
+        if (selector.value === 'manual') {
+            contenedorManual.style.display = 'block';
+            divFuente.style.display = 'none';
+            document.getElementById('ingreso').value = '';
+        } else if (fuentes[selector.value]) {
+            contenedorManual.style.display = 'none';
+            divFuente.innerText = fuentes[selector.value];
+            divFuente.style.display = 'block';
+        } else {
+            contenedorManual.style.display = 'none';
+            divFuente.style.display = 'none';
+        }
+    }
+
+    // LÓGICA CALCULADORA
+    const formato = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+    
+    function formatearMonto(input) {
+        let valor = input.value.replace(/\D/g, "");
+        valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        input.value = valor;
+    }
+
+    function toggleVehiculo() {
+        const val = document.getElementById('mueve_vehiculo').value;
+        const seccionVehiculo = document.getElementById('seccion_vehiculo');
+        const seccionSeom = document.getElementById('seccion_seom');
+        if (val === 'no') {
+            seccionVehiculo.style.display = 'none';
+        } else {
+            seccionVehiculo.style.display = 'block';
+            seccionSeom.style.display = (val === 'auto') ? 'block' : 'none';
+        }
+    }
+
+    function toggleBondi() {
+        document.getElementById('seccion_bondi').style.display = document.getElementById('mueve_bondi').value === 'si' ? 'block' : 'none';
+    }
+
+    function calcular() {
+        const selector = document.getElementById('tipo_ingreso');
+        if (selector.value === "") { alert("Seleccioná una opción en ¿Ingresos?."); return; }
+
+        let ingreso = 0;
+        let esPreset = false;
+        let textoContexto = "";
+        let tipoIngresoTexto = "";
+
+        if (selector.value === 'manual') {
+            const ingresoRaw = document.getElementById('ingreso').value.replace(/\./g, "");
+            ingreso = parseFloat(ingresoRaw) || 0;
+            tipoIngresoTexto = "Manual";
+        } else {
+            ingreso = parseFloat(selector.value);
+            esPreset = true;
+            tipoIngresoTexto = selector.options[selector.selectedIndex].text;
+            textoContexto = "En base a: " + tipoIngresoTexto;
+        }
+
+        const tarifasVal = document.getElementById('tarifas').value;
+        if (ingreso <= 0) { alert("Ingresá tus ingresos mensuales."); return; }
+        if (tarifasVal === "") { alert("Seleccioná una opción de tarifas."); return; }
+
+        let gastosVehiculo = 0;
+        let naftaLitros = 0;
+        let naftaCostoTotal = 0;
+        let seomMonto = 0;
+        const vehiculoTipo = document.getElementById('mueve_vehiculo').value;
+
+        if (vehiculoTipo !== 'no') {
+            naftaLitros = parseFloat(document.getElementById('nafta').value) || 0;
+            naftaCostoTotal = naftaLitros * 2087;
+            if (vehiculoTipo === 'auto') {
+                seomMonto = parseFloat(document.getElementById('seom').value.replace(/\./g, "")) || 0;
+            }
+            gastosVehiculo = naftaCostoTotal + seomMonto;
+        }
+
+        let gastosBondi = 0;
+        let colectivoCant = 0;
+        let colectivoTipoTexto = "";
+        const usaBondi = document.getElementById('mueve_bondi').value === 'si';
+        if (usaBondi) {
+            colectivoCant = parseFloat(document.getElementById('colectivo_cant').value) || 0;
+            const colectivoTipoEl = document.getElementById('colectivo_tipo');
+            colectivoTipoTexto = colectivoTipoEl.options[colectivoTipoEl.selectedIndex].text;
+            gastosBondi = colectivoCant * parseFloat(colectivoTipoEl.value);
+        }
+
+        const gastos = parseFloat(document.getElementById('alquiler').value) + 
+                       parseFloat(tarifasVal) + 
+                       parseFloat(document.getElementById('salud').value) + 
+                       parseFloat(document.getElementById('monotributo').value) + 
+                       gastosVehiculo + gastosBondi;
+        
+        const saldo = ingreso - gastos;
+        const porc = (saldo / ingreso) * 100;
+        
+        document.getElementById('placa-resultado').style.display = 'block';
+        document.getElementById('actions-group').style.display = 'flex';
+        
+        document.getElementById('placa-contexto').innerText = esPreset ? textoContexto : "";
+        
+        if (saldo >= 0) {
+            document.getElementById('placa-titulo').innerText = "Te quedan";
+            document.getElementById('placa-monto').innerText = formato.format(saldo);
+            document.getElementById('placa-porc').innerText = "Te queda el " + porc.toFixed(1) + "% de tus ingresos";
+        } else {
+            document.getElementById('placa-titulo').innerText = "Déficit mensual";
+            document.getElementById('placa-monto').innerText = formato.format(Math.abs(saldo));
+            document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
+        }
+
+        // ——— ENVÍO AL NUEVO FORMULARIO ———
+        const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSexVODJ4z04uIDtozN3Yx0ApsfJE0E1Mxvte_NmLuPWi4dSug/formResponse";
+        const formData = new FormData();
+
+        // ID de cálculo: timestamp
+        formData.append("entry.724915036", new Date().toISOString());
+
+        // Tipo de ingreso / Perfil
+        formData.append("entry.1489203948", tipoIngresoTexto);
+
+        // Monto de ingresos
+        formData.append("entry.2039481029", ingreso);
+
+        // Alquiler
+        const alquilerEl = document.getElementById('alquiler');
+        formData.append("entry.582910493", alquilerEl.options[alquilerEl.selectedIndex].text);
+
+        // Tarifas
+        const tarifasEl = document.getElementById('tarifas');
+        formData.append("entry.1920492019", tarifasEl.options[tarifasEl.selectedIndex].text);
+
+        // Salud
+        const saludEl = document.getElementById('salud');
+        formData.append("entry.394820195", saludEl.options[saludEl.selectedIndex].text);
+
+        // Monotributo
+        const monotributoEl = document.getElementById('monotributo');
+        formData.append("entry.1049204921", monotributoEl.options[monotributoEl.selectedIndex].text);
+
+        // Vehículo
+        formData.append("entry.1849204921", vehiculoTipo.toUpperCase());
+
+        // Nafta litros
+        formData.append("entry.294810295", naftaLitros);
+
+        // Nafta costo total
+        formData.append("entry.849204912", naftaCostoTotal);
+
+        // SEOM
+        formData.append("entry.1492049202", seomMonto);
+
+        // Colectivo
+        formData.append("entry.492049103", usaBondi ? "SI" : "NO");
+        formData.append("entry.1039482011", colectivoCant);
+        formData.append("entry.1940294811", colectivoTipoTexto);
+        formData.append("entry.687498306", gastosBondi);
+
+        // Saldo final
+        formData.append("entry.454992525", saldo);
+
+        fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
+
+        document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function compartirPlaca() {
+        const placa = document.getElementById('placa-resultado');
+        const canvas = await html2canvas(placa, { scale: 2, useCORS: true });
+        canvas.toBlob(async (blob) => {
+            const file = new File([blob], 'mi-presupuesto.png', { type: 'image/png' });
+            if (navigator.share) { try { await navigator.share({ files: [file], title: 'Mi Presupuesto Comunidad' }); } catch (err) { console.error(err); } }
+            else { alert("Usá el botón de Descargar!"); }
+        });
+    }
+
+    function descargarPlaca() {
+        const placa = document.getElementById('placa-resultado');
+        html2canvas(placa, { scale: 2, useCORS: true }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'mi-presupuesto-comunidad.png';
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    }
+</script>
+</body>
+</html>
