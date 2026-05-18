@@ -439,50 +439,59 @@
         const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSexVODJ4z04uIDtozN3Yx0ApsfJE0E1Mxvte_NmLuPWi4dSug/formResponse";
         const formData = new FormData();
 
-        // ID de cálculo: timestamp
+        // 1. ID de cálculo: timestamp
         formData.append("entry.724915036", new Date().toISOString());
 
-        // Tipo de ingreso / Perfil
-        formData.append("entry.1489203948", tipoIngresoTexto);
+        // 2. Tipo de ingreso / Perfil (String exacto)
+        formData.append("entry.1489203948", esPreset ? tipoIngresoTexto : "Cargar mis ingresos manualmente");
 
-        // Monto de ingresos
+        // 3. Monto de ingresos (Valor numérico plano)
         formData.append("entry.2039481029", ingreso);
 
-        // Alquiler
+        // 4. Alquiler (String exacto mapeado de las opciones del select)
         const alquilerEl = document.getElementById('alquiler');
         formData.append("entry.582910493", alquilerEl.options[alquilerEl.selectedIndex].text);
 
-        // Tarifas
+        // 5. Tarifas (String exacto mapeado de las opciones del select)
         const tarifasEl = document.getElementById('tarifas');
         formData.append("entry.1920492019", tarifasEl.options[tarifasEl.selectedIndex].text);
 
-        // Salud
+        // 6. Salud (String exacto mapeado de las opciones del select)
         const saludEl = document.getElementById('salud');
         formData.append("entry.394820195", saludEl.options[saludEl.selectedIndex].text);
 
-        // Monotributo
+        // 7. Monotributo (String exacto mapeado de las opciones del select)
         const monotributoEl = document.getElementById('monotributo');
         formData.append("entry.1049204921", monotributoEl.options[monotributoEl.selectedIndex].text);
 
-        // Vehículo
-        formData.append("entry.1849204921", vehiculoTipo.toUpperCase());
+        // 8. Vehículo (Mapeo a la opción textual del formulario: "No", "Sí, en moto", "Sí, en auto")
+        let vehiculoTextoForm = "No";
+        if (vehiculoTipo === "moto") vehiculoTextoForm = "Sí, en moto";
+        if (vehiculoTipo === "auto") vehiculoTextoForm = "Sí, en auto";
+        formData.append("entry.1849204921", vehiculoTextoForm);
 
-        // Nafta litros
+        // 9. Nafta litros
         formData.append("entry.294810295", naftaLitros);
 
-        // Nafta costo total
+        // 10. Nafta costo total
         formData.append("entry.849204912", naftaCostoTotal);
 
-        // SEOM
+        // 11. SEOM
         formData.append("entry.1492049202", seomMonto);
 
-        // Colectivo
-        formData.append("entry.492049103", usaBondi ? "SI" : "NO");
+        // 12. Colectivo (Mapeo a la opción de tu Form: "Sí" o "No")
+        formData.append("entry.492049103", usaBondi ? "Sí" : "No");
+
+        // 13. Cantidad boletos
         formData.append("entry.1039482011", colectivoCant);
-        formData.append("entry.1940294811", colectivoTipoTexto);
+
+        // 14. Tipo de boleto / Tarifa (String exacto)
+        formData.append("entry.1940294811", usaBondi ? colectivoTipoTexto : "");
+
+        // 15. Gasto colectivo total
         formData.append("entry.687498306", gastosBondi);
 
-        // Saldo final
+        // 16. Saldo final
         formData.append("entry.454992525", saldo);
 
         fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
