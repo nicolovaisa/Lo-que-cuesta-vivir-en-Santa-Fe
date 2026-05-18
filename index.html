@@ -254,10 +254,11 @@
 </div>
 
 <script>
-    // LÓGICA FORMULARIO CONTACTO
-    let currentMode = 'wa';
+    // Variable global de control declarada explícitamente para evitar ReferenceError en el onload del iframe
     let submitted = false;
+    let currentMode = 'wa';
 
+    // LÓGICA FORMULARIO CONTACTO
     function setFormMode(mode) {
         currentMode = mode;
         const container = document.getElementById('fieldsContainer');
@@ -431,10 +432,10 @@
             document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
         }
 
-        // Generar el código único de fecha y hora para el índice inicial
+        // Marca de identificación temporal local para el Sheets
         const idCalculo = new Date().toLocaleString('es-AR');
 
-        // Mapeo de strings visuales de tus selects
+        // Mapeo textual de las opciones de selección única
         const alquilerTexto = document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text;
         const tarifasTexto = document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text;
         const saludTexto = document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text;
@@ -444,27 +445,28 @@
         if (vehiculoTipo === "moto") vehiculoTexto = "Sí, en moto";
         if (vehiculoTipo === "auto") vehiculoTexto = "Sí, en auto";
 
-        // URL de envío mapeada a tu NUEVO formulario de respuestas cortas
+        // URL definitiva basada en la clave e ID real del nuevo formulario de respuestas cortas
         const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSd1LagvHkPQoveNaDk2oKnfpFROkNrwudw2gorUCnp8tpI/formResponse";
-        const formData = new FormData();
         
-        // Inyección de datos alineada a los 16 inputs secuenciales de tu Form nuevo
-        formData.append("entry.449757659", idCalculo);             // 1. ID Cálculo
-        formData.append("entry.480031175", tipoIngresoTexto);       // 2. Perfil de Ingresos
-        formData.append("entry.685311029", ingreso);               // 3. Ingresos Mensuales ($)
-        formData.append("entry.1491295982", alquilerTexto);         // 4. Alquiler
-        formData.append("entry.353347587", tarifasTexto);          // 5. Tarifas (Luz, Gas, Agua)
-        formData.append("entry.1017992928", saludTexto);            // 6. Salud
-        formData.append("entry.1030018512", monotributoTexto);      // 7. Monotributo
-        formData.append("entry.1595186001", vehiculoTexto);         // 8. ¿Se mueve en auto o en moto?
-        formData.append("entry.1541334969", naftaLitros);           // 9. Nafta (Litros/Mes)
-        formData.append("entry.1705607063", naftaCostoTotal);       // 10. Nafta Gasto Total ($)
-        formData.append("entry.1982701193", seomMonto);             // 11. Gasto SEOM ($)
-        formData.append("entry.1352726615", usaBondi ? "Sí" : "No"); // 12. ¿Se mueve en colectivo?
-        formData.append("entry.1764669811", colectivoCant);         // 13. Cantidad de Boletos/Mes
-        formData.append("entry.206689255", usaBondi ? colectivoTipoTexto : ""); // 14. Tipo de Tarifa de Colectivo
-        formData.append("entry.887265113", gastosBondi);            // 15. Gasto Total Colectivo ($)
-        formData.append("entry.1802956799", saldo);                 // 16. Saldo Final ($)
+        // Uso obligatorio de URLSearchParams para forzar codificación application/x-www-form-urlencoded
+        const formData = new URLSearchParams();
+        
+        formData.append("entry.449757659", idCalculo);
+        formData.append("entry.480031175", tipoIngresoTexto);
+        formData.append("entry.685311029", ingreso);
+        formData.append("entry.1491295982", alquilerTexto);
+        formData.append("entry.353347587", tarifasTexto);
+        formData.append("entry.1017992928", saludTexto);
+        formData.append("entry.1030018512", monotributoTexto);
+        formData.append("entry.1595186001", vehiculoTexto);
+        formData.append("entry.1541334969", naftaLitros);
+        formData.append("entry.1705607063", naftaCostoTotal);
+        formData.append("entry.1982701193", seomMonto);
+        formData.append("entry.1352726615", usaBondi ? "Sí" : "No");
+        formData.append("entry.1764669811", colectivoCant);
+        formData.append("entry.206689255", usaBondi ? colectivoTipoTexto : "");
+        formData.append("entry.887265113", gastosBondi);
+        formData.append("entry.1802956799", saldo);
 
         fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
         document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
