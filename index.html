@@ -100,4 +100,352 @@
         </select>
     </div>
 
-    <div class="field" id="contenedor_ingreso_manual" style="display: none
+    <div class="field" id="contenedor_ingreso_manual" style="display: none;">
+        <label>Ingresos Mensuales ($)</label>
+        <input type="text" id="ingreso" placeholder="Ej: 1.000.000" oninput="formatearMonto(this)">
+    </div>
+
+    <div class="field">
+        <label>Alquiler</label>
+        <select id="alquiler">
+            <option value="0">No alquilo</option>
+            <option value="430000">1 ambiente</option>
+            <option value="600000">2 ambientes</option>
+            <option value="700000">3 ambientes</option>
+            <option value="830000">4 ambientes</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Tarifas (Luz, Gas, Agua)</label>
+        <select id="tarifas">
+            <option value="" disabled selected>Selecciona tu situación</option>
+            <option value="141722.99">Con subsidios consumo medio</option>
+            <option value="181337.99">Sin subsidios consumo medio</option>
+            <option value="186886.99">Con subsidios consumo medio/alto</option>
+            <option value="214289.99">Sin subsidios consumo medio/alto</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Salud</label>
+        <select id="salud">
+            <option value="0">Uso la salud pública</option>
+            <option value="106000">Prepaga Individual Económica</option>
+            <option value="121916">Prepaga Individual Media</option>
+            <option value="385454">Prepaga Familiar Económica</option>
+            <option value="500463">Prepaga Familiar Media</option>
+            <option value="0">Tengo Obra Social</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Monotributo</label>
+        <select id="monotributo">
+            <option value="0">No pago / No aplica</option>
+            <option value="42386.74">Categoría A ($42.386,74)</option>
+            <option value="48250.78">Categoría B ($48.250,78)</option>
+            <option value="56501.85">Categoría C ($56.501,85)</option>
+            <option value="72414.10">Categoría D ($72.414,10)</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>¿Te movés en auto o en moto?</label>
+        <select id="mueve_vehiculo" onchange="toggleVehiculo()">
+            <option value="no">No</option>
+            <option value="moto">Sí, en moto</option>
+            <option value="auto">Sí, en auto</option>
+        </select>
+        <div id="seccion_vehiculo" class="sub-field">
+            <label>Nafta (Litros/Mes)</label>
+            <input type="number" id="nafta" placeholder="Cantidad de litros">
+            <div class="nota-aclaratoria">*Valor de litro en YPF Santa Fe: $2.060 (mayo 2026).</div>
+            
+            <div id="seccion_seom" style="display:none; margin-top:15px;">
+                <label>¿Cuánto gastás en SEOM? ($)</label>
+                <input type="text" id="seom" placeholder="Monto en pesos" oninput="formatearMonto(this)">
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <label>¿Te movés en colectivo?</label>
+        <select id="mueve_bondi" onchange="toggleBondi()">
+            <option value="no">No</option>
+            <option value="si">Sí</option>
+        </select>
+        <div id="seccion_bondi" class="sub-field">
+            <label>Cantidad de Boletos/Mes</label>
+            <input type="number" id="colectivo_cant" placeholder="Cantidad" style="margin-bottom: 10px;">
+            <select id="colectivo_tipo">
+                <option value="2111.11">Tarifa plena ($2.111,11)</option>
+                <option value="1900">Boleto frecuente ($1.900)</option>
+                <option value="1477.78">Tarifa Centro ($1.477,78)</option>
+                <option value="1266.67">Estudiantil ($1.266,67)</option>
+                <option value="1055.56">Jubilados ($1.055,56)</option>
+                <option value="844.44">Escolar ($844,44)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button class="btn-calc" onclick="calcular()">Calcular</button>
+        <button class="btn-reset" onclick="location.reload()">Reiniciar</button>
+    </div>
+
+    <div id="placa-resultado">
+        <div id="placa-contexto" style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; color: rgba(255,255,255,0.75);"></div>
+        <div id="placa-titulo" style="font-weight: 800; text-transform: uppercase;"></div>
+        <div id="placa-monto" class="placa-monto"></div>
+        <div id="placa-porc" style="font-weight: 600; margin-bottom: 20px;"></div>
+        <div class="placa-footer"><div class="placa-creditos">No era la casta, eras vos</div></div>
+    </div>
+
+    <div id="actions-group" class="actions-group">
+        <button class="btn-share" onclick="compartirPlaca()">Compartir Resultado 🚀</button>
+        <button class="btn-download" onclick="descargarPlaca()">Descargar Placa 📸</button>
+    </div>
+</div>
+
+<a href="https://www.instagram.com/comunidadsf" target="_blank" class="btn-insta-min">
+    <svg style="width: 16px; height: 16px; fill: #EF3C6B;" viewBox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.058-1.69-.072-4.949-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+    </svg>
+    Seguinos en Instagram
+</a>
+
+<div class="form-container" id="formSection">
+    <h3 style="text-align: center; text-transform: uppercase; font-weight: 800; font-size: 1.1rem; margin-bottom: 20px; font-style: italic;">¿Querés recibir nuestros informes?</h3>
+    
+    <div class="option-group">
+        <button onclick="setFormMode('wa')" id="optWA" class="option-btn active italic">Por WhatsApp</button>
+        <button onclick="setFormMode('mail')" id="optMail" class="option-btn italic">Por Mail</button>
+    </div>
+
+    <form id="contactForm" target="hidden_iframe" onsubmit="return handleFormSubmit()">
+        <div id="fieldsContainer">
+            </div>
+        <button type="submit" class="btn-submit italic">Enviar Datos</button>
+    </form>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {showSuccess();}"></iframe>
+</div>
+
+<div class="section-divider">
+    <h3>¿Cómo calculamos estos datos? En base a los cuadros tarifarios vigentes e informes que publicamos sobre estos temas. Desde acá podés acceder a ellos</h3>
+</div>
+
+<div class="informes-grid">
+    <div class="informe-card">
+        <strong>Tarifas</strong>
+        <iframe class="pdf-viewer" src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Tarifas.pdf&embedded=true"></iframe>
+        <a href="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Tarifas.pdf" target="_blank" class="btn-pdf-dl">Descargar PDF</a>
+    </div>
+    <div class="informe-card">
+        <strong>Salud</strong>
+        <iframe class="pdf-viewer" src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Prepagas%20y%20Medicamentos.pdf&embedded=true"></iframe>
+        <a href="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Prepagas%20y%20Medicamentos.pdf" target="_blank" class="btn-pdf-dl">Descargar PDF</a>
+    </div>
+    <div class="informe-card">
+        <strong>Alquileres</strong>
+        <iframe class="pdf-viewer" src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Alquileres%20COMUNIDAD.pdf&embedded=true"></iframe>
+        <a href="https://raw.githubusercontent.com/comunidadsfe/Lo-que-cuesta-vivir-en-Santa-Fe/main/Informes/Informe%20Alquileres%20COMUNIDAD.pdf" target="_blank" class="btn-pdf-dl">Descargar PDF</a>
+    </div>
+</div>
+
+<script>
+    // LÓGICA FORMULARIO CONTACTO
+    let currentMode = 'wa';
+    let submitted = false;
+
+    function setFormMode(mode) {
+        currentMode = mode;
+        const container = document.getElementById('fieldsContainer');
+        document.getElementById('optWA').className = mode === 'wa' ? 'option-btn active italic' : 'option-btn italic';
+        document.getElementById('optMail').className = mode === 'mail' ? 'option-btn active italic' : 'option-btn italic';
+
+        if (mode === 'wa') {
+            container.innerHTML = `
+                <input type="text" id="nameField" name="entry.1321869567" placeholder="Nombre y Apellido" class="form-input">
+                <input type="text" id="whatsappField" name="entry.135638054" placeholder="WhatsApp" class="form-input">
+                <input type="hidden" name="entry.593198354" value="">
+            `;
+        } else {
+            container.innerHTML = `
+                <input type="hidden" name="entry.1321869567" value="">
+                <input type="hidden" name="entry.135638054" value="">
+                <input type="email" id="mailField" name="entry.593198354" placeholder="Correo electrónico" class="form-input" required>
+            `;
+        }
+    }
+
+    function handleFormSubmit() {
+        if (currentMode === 'wa') {
+            const name = document.getElementById('nameField').value.trim();
+            const wa = document.getElementById('whatsappField').value.trim();
+            if (name === "" || wa === "") {
+                alert("Por favor, completá nombre y celular.");
+                return false;
+            }
+        }
+        const action = "https://docs.google.com/forms/d/e/1FAIpQLScC1OTPDh4_Xupab8GMIwe9XqWdxTLCPYgv4H8UqDOL3YZE2A/formResponse";
+        document.getElementById('contactForm').action = action;
+        submitted = true;
+        return true;
+    }
+
+    function showSuccess() {
+        document.getElementById('formSection').innerHTML = `
+            <div style="text-align: center; padding: 40px 0;">
+                <h3 style="text-transform: uppercase; font-weight: 800; font-size: 1.3rem; color: var(--comunidad-violeta); font-style: italic;">¡Gracias por sumarte!</h3>
+            </div>
+        `;
+    }
+
+    setFormMode('wa');
+
+    // LÓGICA DINÁMICA DE ENTRADA DE INGRESOS
+    function toggleIngresoManual() {
+        const selector = document.getElementById('tipo_ingreso');
+        const contenedorManual = document.getElementById('contenedor_ingreso_manual');
+        
+        if (selector.value === 'manual') {
+            contenedorManual.style.display = 'block';
+            document.getElementById('ingreso').value = '';
+        } else {
+            contenedorManual.style.display = 'none';
+        }
+    }
+
+    // LÓGICA CALCULADORA GASTOS
+    const formato = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+    
+    function formatearMonto(input) {
+        let valor = input.value.replace(/\D/g, "");
+        valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        input.value = valor;
+    }
+
+    function toggleVehiculo() {
+        const val = document.getElementById('mueve_vehiculo').value;
+        const seccionVehiculo = document.getElementById('seccion_vehiculo');
+        const seccionSeom = document.getElementById('seccion_seom');
+        if (val === 'no') {
+            seccionVehiculo.style.display = 'none';
+        } else {
+            seccionVehiculo.style.display = 'block';
+            seccionSeom.style.display = (val === 'auto') ? 'block' : 'none';
+        }
+    }
+
+    function toggleBondi() {
+        document.getElementById('seccion_bondi').style.display = document.getElementById('mueve_bondi').value === 'si' ? 'block' : 'none';
+    }
+
+    function calcular() {
+        const selector = document.getElementById('tipo_ingreso');
+        if (selector.value === "") { alert("Seleccioná una opción en ¿Ingresos?."); return; }
+
+        let ingreso = 0;
+        let esPreset = false;
+        let textoContexto = "";
+
+        if (selector.value === 'manual') {
+            const ingresoRaw = document.getElementById('ingreso').value.replace(/\./g, "");
+            ingreso = parseFloat(ingresoRaw) || 0;
+        } else {
+            ingreso = parseFloat(selector.value);
+            esPreset = true;
+            textoContexto = "En base a: " + selector.options[selector.selectedIndex].text;
+        }
+
+        const tarifasVal = document.getElementById('tarifas').value;
+        if (ingreso <= 0) { alert("Ingresá tus ingresos mensuales."); return; }
+        if (tarifasVal === "") { alert("Seleccioná una opción de tarifas."); return; }
+
+        let gastosVehiculo = 0;
+        let naftaLitros = 0;
+        let seomMonto = 0;
+        const vehiculoTipo = document.getElementById('mueve_vehiculo').value;
+
+        if (vehiculoTipo !== 'no') {
+            naftaLitros = parseFloat(document.getElementById('nafta').value) || 0;
+            const naftaCosto = naftaLitros * 2060;
+            if (vehiculoTipo === 'auto') {
+                seomMonto = parseFloat(document.getElementById('seom').value.replace(/\./g, "")) || 0;
+            }
+            gastosVehiculo = naftaCosto + seomMonto;
+        }
+
+        let gastosBondi = 0;
+        if (document.getElementById('mueve_bondi').value === 'si') {
+            gastosBondi = (parseFloat(document.getElementById('colectivo_cant').value) || 0) * parseFloat(document.getElementById('colectivo_tipo').value);
+        }
+
+        const gastos = parseFloat(document.getElementById('alquiler').value) + 
+                       parseFloat(tarifasVal) + 
+                       parseFloat(document.getElementById('salud').value) + 
+                       parseFloat(document.getElementById('monotributo').value) + 
+                       gastosVehiculo + gastosBondi;
+        
+        const saldo = ingreso - gastos;
+        const porc = (saldo / ingreso) * 100;
+        
+        document.getElementById('placa-resultado').style.display = 'block';
+        document.getElementById('actions-group').style.display = 'flex';
+        
+        // Modificación dinámica del texto superior de la placa
+        document.getElementById('placa-contexto').innerText = esPreset ? textoContexto : "";
+        
+        if (saldo >= 0) {
+            document.getElementById('placa-titulo').innerText = "Te quedan";
+            document.getElementById('placa-monto').innerText = formato.format(saldo);
+            document.getElementById('placa-porc').innerText = "Te queda el " + porc.toFixed(1) + "% de tus ingresos";
+        } else {
+            document.getElementById('placa-titulo').innerText = "Déficit mensual";
+            document.getElementById('placa-monto').innerText = formato.format(Math.abs(saldo));
+            document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
+        }
+
+        // Envío invisible de datos a Google Sheets
+        const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSf5E0Sl-nkVcoQ50I621uRXVC85PnGO-vVFuee8UAE02tXCNA/formResponse";
+        const formData = new FormData();
+        formData.append("entry.1345467469", ingreso);
+        formData.append("entry.1154021935", document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text);
+        formData.append("entry.1557253484", document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text);
+        formData.append("entry.1541049932", document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text);
+        formData.append("entry.27844837", document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text);
+        
+        formData.append("entry.1520329603", vehiculoTipo.toUpperCase());
+        formData.append("entry.961121644", naftaLitros);
+        formData.append("entry.388800495", seomMonto);
+        
+        formData.append("entry.796852082", document.getElementById('mueve_bondi').value === 'si' ? document.getElementById('colectivo_cant').value + " (" + document.getElementById('colectivo_tipo').options[document.getElementById('colectivo_tipo').selectedIndex].text + ")" : "No usa colectivo");
+        formData.append("entry.1554785834", saldo);
+
+        fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
+        document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function compartirPlaca() {
+        const placa = document.getElementById('placa-resultado');
+        const canvas = await html2canvas(placa, { scale: 2, useCORS: true });
+        canvas.toBlob(async (blob) => {
+            const file = new File([blob], 'mi-presupuesto.png', { type: 'image/png' });
+            if (navigator.share) { try { await navigator.share({ files: [file], title: 'Mi Presupuesto Comunidad' }); } catch (err) { console.error(err); } }
+            else { alert("Usá el botón de Descargar!"); }
+        });
+    }
+
+    function descargarPlaca() {
+        const placa = document.getElementById('placa-resultado');
+        html2canvas(placa, { scale: 2, useCORS: true }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'mi-presupuesto-comunidad.png';
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    }
+</script>
+</body>
+</html>
