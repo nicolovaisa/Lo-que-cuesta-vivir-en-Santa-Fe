@@ -445,22 +445,22 @@
         const formURL = "https://docs.google.com/forms/d/1LagvHkPQoveNaDk2oKnfpFROkNrwudw2gorUCnp8tpI/formResponse";
         const formData = new URLSearchParams();
         
-        formData.append("entry.449757659", idCalculo);
-        formData.append("entry.480031175", tipoIngresoTexto);
-        formData.append("entry.685311029", ingreso);
-        formData.append("entry.1491295982", alquilerTexto);
-        formData.append("entry.353347587", tarifasTexto);
-        formData.append("entry.1017992928", saludTexto);
-        formData.append("entry.1030018512", monotributoTexto);
-        formData.append("entry.1595186001", vehiculoTexto);
-        formData.append("entry.1541334969", naftaLitros);
-        formData.append("entry.1705607063", naftaCostoTotal);
-        formData.append("entry.1982701193", seomMonto);
-        formData.append("entry.1352726615", usaBondi ? "Sí" : "No");
-        formData.append("entry.1764669811", colectivoCant);
-        formData.append("entry.206689255", usaBondi ? colectivoTipoTexto : "");
-        formData.append("entry.887265113", gastosBondi);
-        formData.append("entry.1802956799", saldo);
+        formData.append("entry.449757659", String(idCalculo));
+formData.append("entry.480031175", String(tipoIngresoTexto));
+formData.append("entry.685311029", String(ingreso));
+formData.append("entry.1491295982", String(alquilerTexto));
+formData.append("entry.353347587", String(tarifasTexto));
+formData.append("entry.1017992928", String(saludTexto));
+formData.append("entry.1030018512", String(monotributoTexto));
+formData.append("entry.1595186001", String(vehiculoTexto));
+formData.append("entry.1541334969", String(naftaLitros));
+formData.append("entry.1705607063", String(naftaCostoTotal));
+formData.append("entry.1982701193", String(seomMonto));
+formData.append("entry.1352726615", String(usaBondi ? "Sí" : "No"));
+formData.append("entry.1764669811", String(colectivoCant));
+formData.append("entry.206689255", String(usaBondi ? colectivoTipoTexto : ""));
+formData.append("entry.887265113", String(gastosBondi));
+formData.append("entry.1802956799", String(saldo));;
 
         fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
         document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
