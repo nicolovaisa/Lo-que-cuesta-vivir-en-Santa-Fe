@@ -254,6 +254,8 @@
     </div>
 </div>
 
+<iframe name="invisible_form_iframe" id="invisible_form_iframe" style="display:none;"></iframe>
+
 <script>
     // LÓGICA FORMULARIO CONTACTO
     let currentMode = 'wa';
@@ -387,7 +389,8 @@
 
         if (vehiculoTipo !== 'no') {
             naftaLitros = parseFloat(document.getElementById('nafta').value) || 0;
-            naftaCosto = naftaLitros * 2087;
+            const naftaCostoRaw = naftaLitros * 2087;
+            naftaCosto = parseFloat(naftaCostoRaw.toFixed(0));
             if (vehiculoTipo === 'auto') {
                 seomMonto = parseFloat(document.getElementById('seom').value.replace(/\./g, "")) || 0;
             }
@@ -398,7 +401,8 @@
         let colectivoCant = 0;
         if (document.getElementById('mueve_bondi').value === 'si') {
             colectivoCant = parseFloat(document.getElementById('colectivo_cant').value) || 0;
-            gastosBondi = colectivoCant * parseFloat(document.getElementById('colectivo_tipo').value);
+            const gastosBondiRaw = colectivoCant * parseFloat(document.getElementById('colectivo_tipo').value);
+            gastosBondi = parseFloat(gastosBondiRaw.toFixed(0));
         }
 
         const gastos = parseFloat(document.getElementById('alquiler').value) + 
@@ -425,28 +429,46 @@
             document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
         }
 
-        // ENVÍO DE DATOS REDISEÑADO EXCLUSIVAMENTE PARA LA NUEVA MATRIZ DE 14 COLUMNAS CON URL PÚBLICA CORREGIDA
-        const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSexVODJ4z04uIDtozN3Yx0ApsfJE0E1Mxvte_NmLuPWi4dSug/formResponse";
-        const formData = new FormData();
-        
-        formData.append("entry.789366050", ingreso); // 1. ¿Ingresos?
-        formData.append("entry.560044812", esPreset ? selector.options[selector.selectedIndex].text : "Manual"); // 2. Perfil de Ingreso
-        formData.append("entry.320562563", document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text); // 3. Alquiler
-        formData.append("entry.353057028", document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text); // 4. Tarifas
-        formData.append("entry.1141729873", document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text); // 5. Salud
-        formData.append("entry.2003469524", document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text); // 6. Monotributo
-        
-        formData.append("entry.1910555676", vehiculoTipo.toUpperCase()); // 7. ¿Usa vehículo propio?
-        formData.append("entry.1850411247", naftaLitros); // 8. Nafta (Litros)
-        formData.append("entry.35313641", naftaCosto); // 9. Gasto Nafta ($)
-        formData.append("entry.1095848126", seomMonto); // 10. Gasto SEOM ($)
-        
-        formData.append("entry.2038736944", document.getElementById('mueve_bondi').value.toUpperCase() === 'SI' ? 'SÍ' : 'NO'); // 11. ¿Usa colectivo?
-        formData.append("entry.1936157354", colectivoCant); // 12. Cantidad Boletos
-        formData.append("entry.1986127655", document.getElementById('mueve_bondi').value === 'si' ? document.getElementById('colectivo_tipo').options[document.getElementById('colectivo_tipo').selectedIndex].text : "No usa colectivo"); // 13. Tipo de Tarifa Colectivo
-        formData.append("entry.476360893", gastosBondi); // 14. Gasto Colectivo ($)
+        // CREACIÓN DINÁMICA DE UN FORMULARIO EN MEMORIA ASOCIADO AL IFRAME PARA EL ENVIÓ COMPATIBLE CON CORS
+        const targetForm = document.createElement('form');
+        targetForm.method = 'POST';
+        targetForm.action = 'https://docs.google.com/forms/d/e/1FAIpQLSexVODJ4z04uIDtozN3Yx0ApsfJE0E1Mxvte_NmLuPWi4dSug/formResponse';
+        targetForm.target = 'invisible_form_iframe';
+        targetForm.style.display = 'none';
 
-        fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
+        const addParam = (name, value) => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = value;
+            targetForm.appendChild(input);
+        };
+
+        // INYECCIÓN ORDENADA DE LOS 14 MAPEOS PARA TU NUEVO EXCEL
+        addParam("entry.789366050", ingreso);
+        addParam("entry.560044812", esPreset ? selector.options[selector.selectedIndex].text : "Manual");
+        addParam("entry.320562563", document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text);
+        addParam("entry.353057028", document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text);
+        addParam("entry.1141729873", document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text);
+        addParam("entry.2003469524", document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text);
+        
+        addParam("entry.1910555676", document.getElementById('mueve_vehiculo').options[document.getElementById('mueve_vehiculo').selectedIndex].text);
+        addParam("entry.1850411247", naftaLitros);
+        addParam("entry.35313641", naftaCosto);
+        addParam("entry.1095848126", seomMonto);
+        
+        addParam("entry.2038736944", document.getElementById('mueve_bondi').options[document.getElementById('mueve_bondi').selectedIndex].text);
+        addParam("entry.1936157354", colectivoCant);
+        addParam("entry.1986127655", document.getElementById('mueve_bondi').value === 'si' ? document.getElementById('colectivo_tipo').options[document.getElementById('colectivo_tipo').selectedIndex].text : "No");
+        addParam("entry.476360893", gastosBondi);
+
+        document.body.appendChild(targetForm);
+        targetForm.submit();
+        
+        setTimeout(() => {
+            document.body.removeChild(targetForm);
+        }, 500);
+
         document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
     }
 
