@@ -359,94 +359,92 @@
     }
 
     function calcular() {
-        const selector = document.getElementById('tipo_ingreso');
-        if (selector.value === "") { alert("Seleccioná una opción en ¿Ingresos?."); return; }
+    const selector = document.getElementById('tipo_ingreso');
+    if (selector.value === "") { alert("Seleccioná una opción en ¿Ingresos?."); return; }
 
-        let ingreso = 0;
-        let esPreset = false;
-        let textoContexto = "";
+    let ingreso = 0;
+    let esPreset = false;
+    let textoContexto = "";
 
-        if (selector.value === 'manual') {
-            const ingresoRaw = document.getElementById('ingreso').value.replace(/\./g, "");
-            ingreso = parseFloat(ingresoRaw) || 0;
-        } else {
-            ingreso = parseFloat(selector.value);
-            esPreset = true;
-            textoContexto = "En base a: " + selector.options[selector.selectedIndex].text;
-        }
-
-        const tarifasVal = document.getElementById('tarifas').value;
-        if (ingreso <= 0) { alert("Ingresá tus ingresos mensuales."); return; }
-        if (tarifasVal === "") { alert("Seleccioná una opción de tarifas."); return; }
-
-        let gastosVehiculo = 0;
-        let naftaLitros = 0;
-        let seomMonto = 0;
-        const vehiculoTipo = document.getElementById('mueve_vehiculo').value;
-
-        if (vehiculoTipo !== 'no') {
-            naftaLitros = parseFloat(document.getElementById('nafta').value) || 0;
-            const naftaCosto = naftaLitros * 2087;
-            if (vehiculoTipo === 'auto') {
-                seomMonto = parseFloat(document.getElementById('seom').value.replace(/\./g, "")) || 0;
-            }
-            gastosVehiculo = naftaCosto + seomMonto;
-        }
-
-        let gastosBondi = 0;
-        if (document.getElementById('mueve_bondi').value === 'si') {
-            gastosBondi = (parseFloat(document.getElementById('colectivo_cant').value) || 0) * parseFloat(document.getElementById('colectivo_tipo').value);
-        }
-
-        const gastos = parseFloat(document.getElementById('alquiler').value) + 
-                       parseFloat(tarifasVal) + 
-                       parseFloat(document.getElementById('salud').value) + 
-                       parseFloat(document.getElementById('monotributo').value) + 
-                       gastosVehiculo + gastosBondi;
-        
-        const saldo = ingreso - gastos;
-        const porc = (saldo / ingreso) * 100;
-        
-        document.getElementById('placa-resultado').style.display = 'block';
-        document.getElementById('actions-group').style.display = 'flex';
-        
-        document.getElementById('placa-contexto').innerText = esPreset ? textoContexto : "";
-        
-        if (saldo >= 0) {
-            document.getElementById('placa-titulo').innerText = "Te quedan";
-            document.getElementById('placa-monto').innerText = formato.format(saldo);
-            document.getElementById('placa-porc').innerText = "Te queda el " + porc.toFixed(1) + "% de tus ingresos";
-        } else {
-            document.getElementById('placa-titulo').innerText = "Déficit mensual";
-            document.getElementById('placa-monto').innerText = formato.format(Math.abs(saldo));
-            document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
-        }
-
-        // Envío invisible de datos a la nueva URL de Google Forms con estructura FormData original
-        const formURL = "https://docs.google.com/forms/d/1LagvHkPQoveNaDk2oKnfpFROkNrwudw2gorUCnp8tpI/formResponse";
-        
-        // Mapeo exacto de las 15 variables usando tus nuevos IDs verificados del HTML crudo
-        formData.append("entry.668034584", new Date().toLocaleString('es-AR')); // 1. ID Cálculo (Marca Temporal)
-        formData.append("entry.1191741997", ingreso);                          // 2. Ingresos
-        formData.append("entry.1685417240", document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text); // 3. Alquiler
-        formData.append("entry.719316164", document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text);   // 4. Tarifas
-        formData.append("entry.1909112986", document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text);       // 5. Salud
-        formData.append("entry.68412020", document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text); // 6. Monotributo
-        
-        formData.append("entry.1885204949", vehiculoTipo.toUpperCase());         // 7. Se mueve en auto o moto
-        formData.append("entry.332861644", naftaLitros);                         // 8. Litros nafta
-        formData.append("entry.1698485502", naftaLitros * 2087);                 // 9. Gastos nafta
-        formData.append("entry.1639785983", seomMonto);                          // 10. SEOM
-        
-        formData.append("entry.1245079105", document.getElementById('mueve_bondi').value === 'si' ? "SÍ" : "NO"); // 11. Usa colectivo
-        formData.append("entry.300146095", parseFloat(document.getElementById('colectivo_cant').value) || 0);    // 12. Cantidad boletos mes
-        formData.append("entry.893556157", document.getElementById('mueve_bondi').value === 'si' ? document.getElementById('colectivo_tipo').options[document.getElementById('colectivo_tipo').selectedIndex].text : "No aplica"); // 13. Tipo de Boleto
-        formData.append("entry.905310130", gastosBondi);                        // 14. Gastos Colectivo
-        formData.append("entry.484866896", saldo);                              // 15. Saldo final
-
-        fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
-        document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
+    if (selector.value === 'manual') {
+        const ingresoRaw = document.getElementById('ingreso').value.replace(/\./g, "");
+        ingreso = parseFloat(ingresoRaw) || 0;
+    } else {
+        ingreso = parseFloat(selector.value);
+        esPreset = true;
+        textoContexto = "En base a: " + selector.options[selector.selectedIndex].text;
     }
+
+    const tarifasVal = document.getElementById('tarifas').value;
+    if (ingreso <= 0) { alert("Ingresá tus ingresos mensuales."); return; }
+    if (tarifasVal === "") { alert("Seleccioná una opción de tarifas."); return; }
+
+    let gastosVehiculo = 0;
+    let naftaLitros = 0;
+    let seomMonto = 0;
+    const vehiculoTipo = document.getElementById('mueve_vehiculo').value;
+
+    if (vehiculoTipo !== 'no') {
+        naftaLitros = parseFloat(document.getElementById('nafta').value) || 0;
+        const naftaCosto = naftaLitros * 2087;
+        if (vehiculoTipo === 'auto') {
+            seomMonto = parseFloat(document.getElementById('seom').value.replace(/\./g, "")) || 0;
+        }
+        gastosVehiculo = naftaCosto + seomMonto;
+    }
+
+    let gastosBondi = 0;
+    if (document.getElementById('mueve_bondi').value === 'si') {
+        gastosBondi = (parseFloat(document.getElementById('colectivo_cant').value) || 0) * parseFloat(document.getElementById('colectivo_tipo').value);
+    }
+
+    const gastos = parseFloat(document.getElementById('alquiler').value) + 
+                   parseFloat(tarifasVal) + 
+                   parseFloat(document.getElementById('salud').value) + 
+                   parseFloat(document.getElementById('monotributo').value) + 
+                   gastosVehiculo + gastosBondi;
+    
+    const saldo = ingreso - gastos;
+    const porc = (saldo / ingreso) * 100;
+    
+    document.getElementById('placa-resultado').style.display = 'block';
+    document.getElementById('actions-group').style.display = 'flex';
+    
+    document.getElementById('placa-contexto').innerText = esPreset ? textoContexto : "";
+    
+    if (saldo >= 0) {
+        document.getElementById('placa-titulo').innerText = "Te quedan";
+        document.getElementById('placa-monto').innerText = formato.format(saldo);
+        document.getElementById('placa-porc').innerText = "Te queda el " + porc.toFixed(1) + "% de tus ingresos";
+    } else {
+        document.getElementById('placa-titulo').innerText = "Déficit mensual";
+        document.getElementById('placa-monto').innerText = formato.format(Math.abs(saldo));
+        document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
+    }
+
+    // ——— ENVÍO A GOOGLE FORMS ———
+    const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSf10sjhc3sqswcC3dbHmoGV_u16KQ61puIsik-IPwwMGdXaeQ/formResponse";
+    const formData = new FormData();
+
+    formData.append("entry.668034584", new Date().toLocaleString('es-AR'));
+    formData.append("entry.1191741997", ingreso);
+    formData.append("entry.1685417240", document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text);
+    formData.append("entry.719316164", document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text);
+    formData.append("entry.1909112986", document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text);
+    formData.append("entry.68412020", document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text);
+    formData.append("entry.1885204949", vehiculoTipo.toUpperCase());
+    formData.append("entry.332861644", naftaLitros);
+    formData.append("entry.1698485502", naftaLitros * 2087);
+    formData.append("entry.1639785983", seomMonto);
+    formData.append("entry.1245079105", document.getElementById('mueve_bondi').value === 'si' ? "SÍ" : "NO");
+    formData.append("entry.300146095", parseFloat(document.getElementById('colectivo_cant').value) || 0);
+    formData.append("entry.893556157", document.getElementById('mueve_bondi').value === 'si' ? document.getElementById('colectivo_tipo').options[document.getElementById('colectivo_tipo').selectedIndex].text : "No aplica");
+    formData.append("entry.905310130", gastosBondi);
+    formData.append("entry.484866896", saldo);
+
+    fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
+    document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
+}
 
     async function compartirPlaca() {
         const placa = document.getElementById('placa-resultado');
