@@ -191,7 +191,7 @@
     </div>
 
     <div class="button-group">
-        <button class="btn-calc" onclick="">Calcular</button>
+        <button class="btn-calc" onclick="calcular()">calcular</button>
         <button class="btn-reset" onclick="location.reload()">Reiniciar</button>
     </div>
 
@@ -443,8 +443,9 @@
     formData.append("entry.484866896", saldo);
 
     fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
-    document.getElementById('placa-resultado').scrollIntoView}({ behavior: 'smooth' });
+document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
 }
+
 
     async function compartirPlaca() {
         const placa = document.getElementById('placa-resultado');
