@@ -450,21 +450,22 @@
         const formData = new URLSearchParams();
         
         // Mapeo exacto con los 16 IDs reales de hoy pasados a String plano
-        formData.append("entry.668034584", String(idCalculo));
-        formData.append("entry.1191741997", String(tipoIngresoTexto));
-        formData.append("entry.1685417240", String(ingreso));
-        formData.append("entry.719316164", String(alquilerTexto));
-        formData.append("entry.1909112986", String(tarifasTexto));
-        formData.append("entry.68412020", String(saludTexto));
-        formData.append("entry.1885204949", String(monotributoTexto));
-        formData.append("entry.332861644", String(vehiculoTexto));
-        formData.append("entry.1698485502", String(naftaLitros));
-        formData.append("entry.1245079105", String(naftaCostoTotal));
-        formData.append("entry.300146095", String(seomMonto));
-        formData.append("entry.893556157", String(usaBondi ? "Sí" : "No"));
-        formData.append("entry.905310130", String(colectivoCant));
-        formData.append("entry.484866896", String(usaBondi ? colectivoTipoTexto : ""));
-        formData.append("entry.1639785983", String(gastosBondi));
+        formData.append("entry.668034584", String(idCalculo)); // 1
+        formData.append("entry.1191741997", String(tipoIngresoTexto)); // 2
+        formData.append("entry.1685417240", String(ingreso)); // 3
+        formData.append("entry.719316164", String(alquilerTexto)); // 4
+        formData.append("entry.1909112986", String(tarifasTexto)); // 5
+        formData.append("entry.68412020", String(saludTexto)); // 6
+        formData.append("entry.1885204949", String(monotributoTexto)); // 7
+        formData.append("entry.332861644", String(vehiculoTexto)); // 8
+        formData.append("entry.1698485502", String(naftaLitros)); // 9
+        formData.append("entry.1245079105", String(naftaCostoTotal)); // 10
+        formData.append("entry.300146095", String(seomMonto)); // 11
+        formData.append("entry.893556157", String(usaBondi ? "Sí" : "No")); // 12
+        formData.append("entry.905310130", String(colectivoCant)); // 13
+        formData.append("entry.484866896", String(usaBondi ? colectivoTipoTexto : "")); // 14
+        formData.append("entry.1639785983", String(gastosBondi)); // 15
+        formData.append("entry.1802956799", String(saldo)); // 16
 
         fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
         document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
