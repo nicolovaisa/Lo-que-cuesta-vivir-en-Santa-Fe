@@ -465,7 +465,6 @@
         formData.append("entry.905310130", String(colectivoCant));
         formData.append("entry.484866896", String(usaBondi ? colectivoTipoTexto : ""));
         formData.append("entry.1639785983", String(gastosBondi));
-        formData.append("entry.1802956799", String(saldo));
 
         fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
         document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
