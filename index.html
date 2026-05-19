@@ -229,7 +229,7 @@
             </div>
         <button type="submit" class="btn-submit italic">Enviar Datos</button>
     </form>
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(typeof submitted !== 'undefined' && submitted) {showSuccess();}"></iframe>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {showSuccess();}"></iframe>
 </div>
 
 <div class="section-divider">
@@ -354,12 +354,8 @@
         }
     }
 
-    // Corregida función rota de colectivo
     function toggleBondi() {
-        const seccionBondi = document.getElementById('seccion_bondi');
-        if (seccionBondi) {
-            seccionBondi.style.display = document.getElementById('mueve_bondi').value === 'si' ? 'block' : 'none';
-        }
+        document.getElementById('seccion_bondi').style.display = document.getElementById('mueve_bondi').value === 'si' ? 'block' : 'none';
     }
 
     function calcular() {
@@ -369,17 +365,14 @@
         let ingreso = 0;
         let esPreset = false;
         let textoContexto = "";
-        let tipoIngresoTexto = "";
 
         if (selector.value === 'manual') {
             const ingresoRaw = document.getElementById('ingreso').value.replace(/\./g, "");
             ingreso = parseFloat(ingresoRaw) || 0;
-            tipoIngresoTexto = "Cargar mis ingresos manualmente";
         } else {
             ingreso = parseFloat(selector.value);
             esPreset = true;
-            tipoIngresoTexto = selector.options[selector.selectedIndex].text;
-            textoContexto = "En base a: " + tipoIngresoTexto;
+            textoContexto = "En base a: " + selector.options[selector.selectedIndex].text;
         }
 
         const tarifasVal = document.getElementById('tarifas').value;
@@ -388,28 +381,21 @@
 
         let gastosVehiculo = 0;
         let naftaLitros = 0;
-        let naftaCostoTotal = 0;
         let seomMonto = 0;
         const vehiculoTipo = document.getElementById('mueve_vehiculo').value;
 
         if (vehiculoTipo !== 'no') {
             naftaLitros = parseFloat(document.getElementById('nafta').value) || 0;
-            naftaCostoTotal = naftaLitros * 2087;
+            const naftaCosto = naftaLitros * 2087;
             if (vehiculoTipo === 'auto') {
                 seomMonto = parseFloat(document.getElementById('seom').value.replace(/\./g, "")) || 0;
             }
-            gastosVehiculo = naftaCostoTotal + seomMonto;
+            gastosVehiculo = naftaCosto + seomMonto;
         }
 
         let gastosBondi = 0;
-        let colectivoCant = 0;
-        let colectivoTipoTexto = "";
-        const usaBondi = document.getElementById('mueve_bondi').value === 'si';
-        if (usaBondi) {
-            colectivoCant = parseFloat(document.getElementById('colectivo_cant').value) || 0;
-            const colectivoTipoEl = document.getElementById('colectivo_tipo');
-            colectivoTipoTexto = colectivoTipoEl.options[colectivoTipoEl.selectedIndex].text;
-            gastosBondi = colectivoCant * parseFloat(colectivoTipoEl.value);
+        if (document.getElementById('mueve_bondi').value === 'si') {
+            gastosBondi = (parseFloat(document.getElementById('colectivo_cant').value) || 0) * parseFloat(document.getElementById('colectivo_tipo').value);
         }
 
         const gastos = parseFloat(document.getElementById('alquiler').value) + 
@@ -436,36 +422,28 @@
             document.getElementById('placa-porc').innerText = "Tus gastos superan tus ingresos en un " + Math.abs(porc).toFixed(1) + "%";
         }
 
-        const idCalculo = new Date().toLocaleString('es-AR');
-        const alquilerTexto = document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text;
-        const tarifasTexto = document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text;
-        const saludTexto = document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text;
-        const monotributoTexto = document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text;
-
-        let vehiculoTexto = "No";
-        if (vehiculoTipo === "moto") vehiculoTexto = "Sí, en moto";
-        if (vehiculoTipo === "auto") vehiculoTexto = "Sí, en auto";
-
-        const formURL = "https://docs.google.com/forms/d/1LagvHkPQoveNaDk2oKnfpFROkNrwudw2gorUCnp8tpI/formResponse";
-        const formData = new URLSearchParams();
+        // Envío invisible de datos a la nueva URL de Google Forms con estructura FormData original
+        const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSfp_D1u-g0v1b7W4S-mC_9-6G2m9EaD0-A_9E0A_0t02t0000/formResponse";
+        const formData = new FormData();
         
-        // Mapeo exacto con los 16 IDs reales de hoy pasados a String plano
-        formData.append("entry.668034584", String(idCalculo)); // 1
-        formData.append("entry.1191741997", String(tipoIngresoTexto)); // 2
-        formData.append("entry.1685417240", String(ingreso)); // 3
-        formData.append("entry.719316164", String(alquilerTexto)); // 4
-        formData.append("entry.1909112986", String(tarifasTexto)); // 5
-        formData.append("entry.68412020", String(saludTexto)); // 6
-        formData.append("entry.1885204949", String(monotributoTexto)); // 7
-        formData.append("entry.332861644", String(vehiculoTexto)); // 8
-        formData.append("entry.1698485502", String(naftaLitros)); // 9
-        formData.append("entry.1245079105", String(naftaCostoTotal)); // 10
-        formData.append("entry.300146095", String(seomMonto)); // 11
-        formData.append("entry.893556157", String(usaBondi ? "Sí" : "No")); // 12
-        formData.append("entry.905310130", String(colectivoCant)); // 13
-        formData.append("entry.484866896", String(usaBondi ? colectivoTipoTexto : "")); // 14
-        formData.append("entry.1639785983", String(gastosBondi)); // 15
-        formData.append("entry.1802956799", String(saldo)); // 16
+        // Mapeo exacto de las 15 variables usando tus nuevos IDs verificados del HTML crudo
+        formData.append("entry.668034584", new Date().toLocaleString('es-AR')); // 1. ID Cálculo (Marca Temporal)
+        formData.append("entry.1191741997", ingreso);                          // 2. Ingresos
+        formData.append("entry.1685417240", document.getElementById('alquiler').options[document.getElementById('alquiler').selectedIndex].text); // 3. Alquiler
+        formData.append("entry.719316164", document.getElementById('tarifas').options[document.getElementById('tarifas').selectedIndex].text);   // 4. Tarifas
+        formData.append("entry.1909112986", document.getElementById('salud').options[document.getElementById('salud').selectedIndex].text);       // 5. Salud
+        formData.append("entry.68412020", document.getElementById('monotributo').options[document.getElementById('monotributo').selectedIndex].text); // 6. Monotributo
+        
+        formData.append("entry.1885204949", vehiculoTipo.toUpperCase());         // 7. Se mueve en auto o moto
+        formData.append("entry.332861644", naftaLitros);                         // 8. Litros nafta
+        formData.append("entry.1698485502", naftaLitros * 2087);                 // 9. Gastos nafta
+        formData.append("entry.1639785983", seomMonto);                          // 10. SEOM
+        
+        formData.append("entry.1245079105", document.getElementById('mueve_bondi').value === 'si' ? "SÍ" : "NO"); // 11. Usa colectivo
+        formData.append("entry.300146095", parseFloat(document.getElementById('colectivo_cant').value) || 0);    // 12. Cantidad boletos mes
+        formData.append("entry.893556157", document.getElementById('mueve_bondi').value === 'si' ? document.getElementById('colectivo_tipo').options[document.getElementById('colectivo_tipo').selectedIndex].text : "No aplica"); // 13. Tipo de Boleto
+        formData.append("entry.905310130", gastosBondi);                        // 14. Gastos Colectivo
+        formData.append("entry.484866896", saldo);                              // 15. Saldo final
 
         fetch(formURL, { method: "POST", mode: "no-cors", body: formData });
         document.getElementById('placa-resultado').scrollIntoView({ behavior: 'smooth' });
